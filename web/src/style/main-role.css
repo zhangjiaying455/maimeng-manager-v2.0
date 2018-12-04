@@ -1,0 +1,122 @@
+.role-power .modal-header{
+    border-bottom: 0;
+}
+.role-power .modal-header h4{
+    color: #333333;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+.role-power .modal-footer{
+    clear: both;
+    border-top: 0;
+}
+.role-power .power-list{
+    clear: both;
+    padding: 0 15px;
+}
+.role-power .power-list .list-left,.role-power .power-list .list-right{
+    width: 48%;
+    height: 400px;
+    padding: 12px 0;
+    border:1px solid #d6d6d6;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    overflow-y: auto;
+}
+.role-power .power-list .list-left{
+    float: left;
+}
+.role-power .power-list .list-right{
+    float: right;
+}
+.role-power .power-list ul li{
+    height: 30px;
+    padding: 0 15px;
+    color: #595959;
+    font-size: 14px;
+    line-height: 30px;
+    cursor: pointer;
+}
+.role-power .power-list ul li:hover{
+    background-color: #fafafa;
+}
+.role-power .power-list ul li.current{
+    background-color: #e3f1f9;
+}
+.role-power .power-list ul li input{
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    position: relative;
+    top: 2px;
+}
+.role-power .power-list ul li span{
+    color: #037dc5;
+    font-size: 14px;
+    line-height: 26px;
+    float: right;
+    margin-right: 10px;
+}
+.role-remark{
+    width: 600px !important;
+}
+.roles-info{
+    margin-bottom: 20px;
+}
+.roles-info label{
+    margin-right: 20px;
+}
+.roles-info label input{
+    margin-right: 10px;
+    position: relative;
+    top: 2px;
+}
+.roles-list{
+    margin-bottom: 20px;
+}
+.roles-list ul li{
+    width: 100%;
+    min-height: 48px;
+    background-color: #fbfbfb;
+    margin-bottom: 10px;
+}
+.roles-list ul li h5{
+    width: 80px;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 46px;
+    text-align: right;
+    margin-right: 30px;
+    display: inline-block;
+}
+.roles-list ul li span{
+    color: #666666;
+    margin-right: 20px;
+}
+.roles-list ul li span i{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #ababab;
+    margin-right: 6px;
+}
+.roles-list-empty{
+    width: 750px;
+    height: 240px;
+    border:1px solid #d6d6d6;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+
+    color: #b9b9b9;
+    font-size: 12px;
+    text-align: center;
+    line-height: 240px;
+}
