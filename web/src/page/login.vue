@@ -72,18 +72,18 @@
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
                         this.loading = true;
-                        const res=this.$store.dispatch("Login", this.loginForm)
-                            res.then(() => {
-                                this.$message({
-                                    type: 'success',
-                                    message: '登录成功!',
-                                });
-                                this.$router.push({ path: "/manage" });
+                        const res=this.$store.dispatch("Login", this.loginForm).then(()=>{
+                            debugger
+                            this.$message({
+                                type:'success',
+                                message:'登录成功'
                             })
-                            .catch(() => {
-                                debugger;
+                            this.$router.push({
+                                path:'/manage'
+                            })
+                        }).catch(()=>{
 
-                            });
+                        })
                     } else {
                         console.log("error submit!!");
                         return false;
