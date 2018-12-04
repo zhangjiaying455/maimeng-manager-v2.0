@@ -19,14 +19,14 @@
                         <div class="form-input">
                             <span class="input-left">手机号码</span>
                             <span class="input-middle">
-                                <input type="text" value="" class="txt-common" placeholder="请输入您的手机号码">
+                                <input v-model="phone" type="text" value="" class="txt-common" placeholder="请输入您的手机号码">
                             </span>
                             <span class="input-right wrong">账号不存在</span>
                         </div>
                         <div class="form-input">
                             <span class="input-left">验证码</span>
                             <span class="input-middle">
-                                <input type="text" value="" class="txt-common" placeholder="请输入短信验证码">
+                                <input v-model="code" type="text" value="" class="txt-common" placeholder="请输入短信验证码">
                                 <button type="button" class="btn-small">获取验证码</button>
                             </span>
                             <span class="input-right">验证码错误</span>
@@ -34,21 +34,21 @@
                         <div class="form-input">
                             <span class="input-left">公司名称</span>
                             <span class="input-middle">
-                                <input type="text" value="" class="txt-common" placeholder="请输入公司名称">
+                                <input v-model="companyName" type="text" value="" class="txt-common" placeholder="请输入公司名称">
                             </span>
                             <span class="input-right"></span>
                         </div>
                         <div class="form-input">
                             <span class="input-left">称呼</span>
                             <span class="input-middle">
-                                <input type="text" value="" class="txt-common" placeholder="请输入您的称呼，如王先生">
+                                <input v-model="name" type="text" value="" class="txt-common" placeholder="请输入您的称呼，如王先生">
                             </span>
                             <span class="input-right"></span>
                         </div>
                         <div class="form-input">
                             <span class="input-left">密码</span>
                             <span class="input-middle">
-                                <input type="text" value="" class="txt-common" placeholder="请输入6-16位数字或字母组成的密码">
+                                <input v-model="password" type="text" value="" class="txt-common" placeholder="请输入6-16位数字或字母组成的密码">
                             </span>
                             <span class="input-right"></span>
                         </div>
@@ -56,7 +56,7 @@
                             <input type="checkbox"> 我已阅读并同意《麦盟网站服务条款》
                         </div>
                         <div class="form-btn">
-                            <button type="button" class="btn-common">注册</button>
+                            <button type="button" class="btn-common" @click="submitReg">注册</button>
                         </div>
                     </div>
                 </div>
@@ -69,9 +69,15 @@
 </template>
 
 <script>
+    import request from '@/untils/request'
 	export default {
 	    data(){
            return{
+               phone:'',
+               code:'',
+               companyName:'',
+               name:'',
+               password:'',
            }
 		},
         methods:{
@@ -79,8 +85,36 @@
 	            this.$router.push({
                     path:'/'
                 })
+            },
+            submitReg(){
+                return request({
+                    method:'post',
+                    url:'/authserver/user/regist',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    data:{
+                        account:this.registerForm.phone,
+                        companyName:this.registerForm.appellation,
+                        name:this.registerForm.name,
+                        password: this.registerForm.password
+                    }
+                }).then((res)=>{
+                    debugger
+                    console.log(res.data)
+                    this.$message({
+                        type:'success',
+                        message:'注册成功'
+                    })
+                    this.$router.push({
+                        path:'/'
+                    })
+                }).catch((error)=>{
+                    debugger
+                    console.log(error)
+                })
             }
-        }
+            }
 	}
 </script>
 

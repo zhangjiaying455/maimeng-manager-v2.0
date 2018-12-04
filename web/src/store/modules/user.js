@@ -1,5 +1,6 @@
 import { login , dictionary} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/untils/auth'
+import md5 from 'js-md5'
 
 const user = {
   state: {
@@ -39,12 +40,12 @@ const user = {
     // 登录
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
+        const password=md5(userInfo.password)
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data;
-          // console.log(data.data)
-          setToken(data.data)
-          commit('SET_TOKEN', data.data);
+        login(username,password).then(response => {
+              console.log(response.data)
+              setToken(response.data)
+              commit('SET_TOKEN', response.data);
           resolve()
         }).catch(error => {
           reject(error)
