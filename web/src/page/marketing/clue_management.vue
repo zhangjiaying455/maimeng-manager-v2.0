@@ -98,13 +98,20 @@
                     prop="address"
                     label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small"></el-button>
-                        <audio src="../../music/The%20Glitch%20Mob%20-%20RISE.mp3" controls="controls" id="music" v-if="musicShow"></audio>
-                        <i class="iconfont icon-round-headset_mic- color" @click="playPause(scope.row)"></i>
+                        <i id="record" name="play" @change="hh(iconName)"  class="iconfont icon-round-headset_mic- color" @click="playPause(scope.row,scope.$index,$event)"></i>
                         <i class="iconfont icon-xiangqing color"></i>
                     </template>
                 </el-table-column>
             </el-table>
+            <audio v-show="musicShow"   preload="auto" controls="controls" id="music"></audio>
+            <div class="pager-left" v-if="pag_show">
+                <span>每页显示：</span>
+                <select id="pager-size" @change="change_size">
+                    <option value="10">每页显示10条</option>
+                    <option value="20">每页显示20条</option>
+                    <option value="50">每页显示50条</option>
+                </select>
+            </div>
             <div class="pagination_content" style="text-align: right;margin-top: 10px;">
                 <el-pagination
                     v-if="pag_show"
@@ -112,9 +119,8 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
-                    :page-sizes="[10, 20, 30, 40]"
                     :page-size="pageSize"
-                    layout=" sizes, prev, pager, next,total, jumper"
+                    layout="prev, pager, next,total, jumper"
                     :total="total">
                 </el-pagination>
             </div>
@@ -132,7 +138,11 @@
         inject:['reload'],//注入reload方法
         data() {
             return {
+                icon:'iconfont icon-round-headset_mic- color',
+                iconShow:'iconfont icon-bofang color',
                 musicShow:false,
+                musicH:true,
+                musicS:false,
                 beginTime:'',
                 endTime:'',
                 pag_show:true,
@@ -315,7 +325,6 @@
                     }
                 }).catch((error)=>{
                     debugger
-                    console.log(error)
 
                 })
             },
@@ -367,13 +376,82 @@
                 })
 
             },
-            playPause(row){
-                this.id=row.id;
+            //点击播放
+            playPause(row,index,event){
+                console.log("play");
+                console.log(event.target);
+                console.log("play");
+                let url=row.videoPath
                 let audio=document.getElementById('music')
-                this.musicShow=true
-                audio.play()
-            }
+                // let iconClass=document.getElementsByClassName('iconfont icon-round-headset_mic- color')
+                let iconShow=event.target.getAttribute('class')
+                let iconName=event.target.getAttribute('name')
+                if (iconShow == 'iconfont icon-round-headset_mic- color') {
+                             debugger
+                             let i_list=document.getElementsByName("play");
+                             for(let n=0;n<i_list.length;n++){
+                                 i_list[n].className="iconfont icon-round-headset_mic- color";
+                             }
+                             event.target.setAttribute("class", "iconfont icon-bofang color");
+                             debugger
+                             console.log(this)
+                             audio.src = url;
+                             audio.play()
+                     } else {
+                          debugger
+                            let i_list=document.getElementsByName("play");
+                                 event.target.setAttribute("class", "iconfont icon-round-headset_mic- color")
+                                 audio.pause()
+                             }
 
+
+               // let url=row.videoPath
+              /* let icon=this.icon;
+                console.log(url)
+                if(!url){
+                    this.$message.error("没有录音文件");
+                    return false
+                }else{
+                    let audio=document.getElementById('music')
+                        debugger
+                        this.musicH=false
+                        this.musicS=true;
+                        audio.src=url;
+                        audio.play()
+                }*/
+         /*    for (var i=0;i<this.tableData.length;i++){
+                 debugger
+                 let url=row.videoPath;
+                 let audio=document.getElementById('music')
+                 if (this.tableData[i].videoPath == url){
+                     debugger
+                     console.log(this.tableData[i].videoPath)
+                     console.log(url)
+                     let record=document.getElementById("record").setAttribute("class",'iconfont icon-bofang color')
+                     audio.src=url;
+                     audio.play()
+
+                 } else{
+                     console.log(this.tableData[i].videoPath)
+                     console.log(url)
+                     let record=document.getElementById("record").setAttribute("class",'iconfont icon-round-headset_mic- color')
+                     audio.pause()
+                 }
+             }*/
+
+            },
+            //点击暂停
+           /* playDone(row){
+               let audio=document.getElementById('music')
+                this.musicS=false;
+                this.musicH=true;
+                audio.pause();
+            },*/
+            //每页显示多少条
+            change_size(){
+                this.pageSize=document.getElementById("pager-size").value;
+                this.search();
+            }
         },
         computed:{
             ...mapGetters([
@@ -399,6 +477,13 @@
     .clue-list .btn-search{
         height: 35px;
         line-height: 15px;
+    }
+    .clue-list .el-table th>.cell{
+        text-align: center;
+    }
+    .btn-small{
+        position: absolute;
+        right: 30px;
     }
     /*//表头颜色为白色
     .el-table th > .cell{
@@ -519,5 +604,21 @@
     .el-table--fit{margin-top: 40px}
     .item-right{display: inline-block}
     .color{color: #1d90e6;}*/
+    .color{color: #1d90e6;cursor: pointer}
+    .pager-left{
+        float: left;
+        width: 200px;
+        margin-top: 15px;
+    }
+    .pager-left select{
+        color: #c9c7c7;
+        font-size: 12px;
+        border:1px solid #eaeaea;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        height: 28px;
+    }
+
 </style>
 

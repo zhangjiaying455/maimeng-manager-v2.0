@@ -143,7 +143,7 @@
                     url:'mai-meng-cloud/dict',
                 }).then((res)=>{
                     debugger
-                    //console.log(res.data);
+                    console.log(res.data);
                     if(res.data.code=="200"){
                         for(let i=0;i<res.data.data.length;i++){
                             if(res.data.data[i].groupId=="8"){
@@ -152,6 +152,7 @@
                                     "name":res.data.data[i].dValue
                                 }
                                 this.vocation.push(obj);
+
                             }
                         }
                     }

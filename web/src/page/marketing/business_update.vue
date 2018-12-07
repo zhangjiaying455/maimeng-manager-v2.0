@@ -43,13 +43,13 @@
                 <div class="edit-info info-padding">
                     <div class="info-left">
                         <div class="info-item">
-                            <span class="item-left font-black">需求名称</span>
+                            <span class="item-left font-black"><span>*</span>需求名称</span>
                             <span class="item-right">
                                         <input v-model="newRole.demandName" type="text"  class="txt-common">
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">需求周期</span>
+                            <span class="item-left font-black"><span>*</span>需求周期</span>
                             <span class="item-right">
                                            <el-date-picker
                                                v-model="newRole.beginTime"
@@ -68,7 +68,7 @@
                                     </span>
                         </div>
                         <div class="info-item" >
-                            <span class="item-left font-black">运营模式</span>
+                            <span class="item-left font-black"><span>*</span>运营模式</span>
                             <span class="item-right">
                                         <el-select class="common"  v-model="newRole.operationMode"  @change="changeOperation($event)">
                                             <el-option  :label="item.dValue" :value="item.dKey"  v-for="item in operationData"  :key="item.dKey">{{item.dValue}}</el-option>
@@ -76,7 +76,7 @@
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">业务分类</span>
+                            <span class="item-left font-black"><span>*</span>业务分类</span>
                             <span class="item-right">
                                         <el-select class="common" v-model="newRole.businessClassification" @change="changeClass($event)">
                                             <el-option :label="item.dValue" :value="item.dKey"  v-for="item in businessData" :key="item.dKey">{{item.dValue}}</el-option>
@@ -84,13 +84,13 @@
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">年龄范围</span>
+                            <span class="item-left font-black"><span>*</span>年龄范围</span>
                             <span class="item-right">
                                         <input type="text" class="txt-common" value="" style="width: 159px !important;" v-model="newRole.beginAge"> - <input type="text" class="txt-common" value="" style="width:159px !important;" v-model="newRole.endAge">
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">课价水平</span>
+                            <span class="item-left font-black"><span>*</span>课价水平</span>
                             <span class="item-right">
                                         <el-select class="common" v-model="newRole.priceLevel" @change="changeAcademic($event)">
                                             <el-option :label="item.dValue" :value="item.dKey" v-for="item in priceleveData" :key="item.dKey">{{item.dValue}}</el-option>
@@ -98,7 +98,7 @@
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">目标区域</span>
+                            <span class="item-left font-black"><span>*</span>目标区域</span>
                             <span class="item-right">
                                         <el-select class="common"  v-model="newRole.area"  @change="changeObject($event)">
                                             <el-option :label='item.dValue' :value="item.dKey" v-for="item in regionData" :key="item.dKey">{{item.dValue}}</el-option>
@@ -142,7 +142,7 @@
                 <div class="edit-info info-padding">
                     <div class="info-left">
                         <div class="info-item">
-                            <span class="item-left font-black">品牌名称</span>
+                            <span class="item-left font-black"><span>*</span>品牌名称</span>
                             <span class="item-right">
                                         <el-select class="common"  v-model="newRole.brand">
                                             <el-option :value="item.brandName" v-for="item in brands" :key="item.dKey">{{item.brandName}}</el-option>
@@ -150,13 +150,13 @@
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">业务负责人</span>
+                            <span class="item-left font-black"><span>*</span>业务负责人</span>
                             <span class="item-right">
                                         <input type="text"  v-model="newRole.contactPerson" class="txt-common">
                                     </span>
                         </div>
                         <div class="info-item">
-                            <span class="item-left font-black">联系电话</span>
+                            <span class="item-left font-black"><span>*</span>联系电话</span>
                             <span class="item-right">
                                         <input type="text" value="" class="txt-common" v-model="newRole.mobile">
                                     </span>
@@ -196,13 +196,14 @@
                         v-for="tag in dynamicTags"
                         closable
                         :disable-transitions="false"
+                        :title="desc"
                         @close="handleClose(tag)">
                         {{tag}}
                     </el-tag>
                 </ul>
                 <div class="edit-info" style="width: 100%; clear: both">
                     <div class="info-item">
-                        <span class="item-left font-black">自定义标签</span>
+                        <span class="item-left font-black"><span>*</span>自定义标签</span>
                         <span class="item-right">
                                        <input type="text" class="txt-common" id="tag-title" value="" placeholder="标签不能超过10个字" v-if="inputVisible" v-model="inputValue" ref="saveTagInput">
                                 </span>
@@ -210,7 +211,7 @@
                     <div class="info-item">
                         <span class="item-left font-black" style="vertical-align: top">标签描述</span>
                         <span class="item-right">
-                                    <textarea class="txt-area" id="tag-remark" rows="5" cols="50" placeholder="请输入标签描述，标签描述不能超过35个字"></textarea>
+                                    <textarea class="txt-area" v-model="desc" id="tag-remark" rows="5" cols="50" placeholder="请输入标签描述，标签描述不能超过35个字"></textarea>
                                 </span>
                     </div>
                     <div class="info-item">
@@ -368,6 +369,7 @@
         data(){
             return{
                 params:'',
+                desc:'',
               newRole:{
                   demandName:'',//需求名称
                   supplementary:'',//补充说明
@@ -383,7 +385,6 @@
                   businessClassification:'',//业务分类
                   priceLevel:'',//课价水平
                   area:'',//目标区域
-                  // systemTags:'',//	系统标签
                   userTags:'',//自定义标签
                   brand:'',//品牌名称
               },
@@ -464,12 +465,30 @@
                 this.dialogVisible = true;
             },
             checkSecond(){
-                let arr = document.getElementsByClassName("tab_item");
-                this.first_step=false
-                this.second_step=true
-                arr[1].classList.add("over")
-
+                if(this.newRole.demandName == ''){
+                    this.$message.error("请输入需求名称")
+                }else if(this.newRole.beginTime == '' || this.newRole.endTime == ''){
+                    this.$message.error("请选择需求周期")
+                }else if(this.newRole.operationMode == ''){
+                    this.$message.error("请选择运营模式")
+                }
+                else if(this.newRole.businessClassification == ''){
+                    this.$message.error("请选择业务分类")
+                }
+                else if(this.newRole.beginAge == '' || this.newRole.endAge == ''){
+                    this.$message.error("请输入年龄范围")
+                }else if(this.newRole.priceLevel == ''){
+                    this.$message.error("请选择课业水平")
+                }else if(this.newRole.area == ''){
+                    this.$message.error("请选择目标区域")
+                }else{
+                    let arr = document.getElementsByClassName("tab_item");
+                    this.first_step=false
+                    this.second_step=true
+                    arr[1].classList.add("over")
+                }
             },
+            //编辑
             editor(){
                     let rowId=this.$route.query.rowId
                     return request({
@@ -552,16 +571,28 @@
                 arr[1].classList.remove("over")
             },
             checkThird(){
-                let arr = document.getElementsByClassName("tab_item");
-                this.second_step=false
-                this.third_step=true
-                arr[2].classList.add("over")
+                if(this.newRole.brand == ''){
+                    this.$message.error("请选择品牌名称")
+                }else if(this.newRole.contactPerson == ''){
+                    this.$message.error("请输入业务负责人")
+                }else if(this.newRole.mobile == ''){
+                    this.$message.error("请输入联系电话")
+                }else{
+                    let arr = document.getElementsByClassName("tab_item");
+                    this.second_step=false
+                    this.third_step=true
+                    arr[2].classList.add("over")
+                }
             },
             checkFour(){
-                let arr = document.getElementsByClassName("tab_item");
-                this.third_step=false
-                this.four_step=true
-                arr[3].classList.add("over")
+                if(this.dynamicTags == ''){
+                    this.$message.error("请输入自定义标签")
+                }else{
+                    let arr = document.getElementsByClassName("tab_item");
+                    this.third_step=false
+                    this.four_step=true
+                    arr[3].classList.add("over")
+                }
             },
             checkUpper(){
                   let arr = document.getElementsByClassName("tab_item");
@@ -577,6 +608,7 @@
                   arr[3].classList.remove("over")
             },
             changeOperation(event){
+                debugger
                 console.log(event)
                 this.operationMode = event; //获取运营模式的ID，即option对应的ID值
                 if(this.operationMode==1){
@@ -587,7 +619,9 @@
             },
             changeClass(event){
                 console.log(event)
+                debugger
                 this.businessClassification = event;
+                console.log(this.businessClassification)
                 if(this.businessClassification==1){
                     this.businessValue='幼儿早教'
                 }else if (this.businessClassification==2){
@@ -595,10 +629,11 @@
                 }else if(this.businessClassification==3){
                     this.businessValue='成人英语'
                 }else{
-                    this.operationValue='少儿编程'
+                    this.businessValue='少儿编程'
                 }
             },
             changeAcademic(event){
+                debugger
                 console.log(event)
                 this.priceLevel = event;
                 if(this.priceLevel==1){
@@ -610,14 +645,15 @@
                 }
             },
             changeObject(event){
+                debugger
                 console.log(event)
                 this.area = event;
                 if(this.area==1){
-                    this. areaValue='一线城市'
+                    this.areaValue='一线城市'
                 }else if (this.area==2){
-                    this. areaValue='二线城市'
+                    this.areaValue='二线城市'
                 }else{
-                    this. areaValue='三线城市'
+                    this.areaValue='三线城市'
                 }
             },
             //更新需求确定
@@ -722,11 +758,42 @@
                         }
                     }
                     console.log(dest)
-                    this.operationData=dest[0].data  //运营模式数据
+                    /*this.operationData=dest[0].data  //运营模式数据
                     this.businessData=dest[1].data  //业务分类数据
                     this.priceleveData=dest[2].data  //课价水平数据
                     this.regionData=dest[3].data  //目标区域数据
-                    this.cluesData=dest[5].data //线索模板数据
+                    this.cluesData=dest[5].data //线索模板数据*/
+
+                    let operationDatas=dest[0].data  //运营模式数据
+                    let operationData=JSON.stringify(operationDatas)
+                    sessionStorage.setItem('operationData',operationData)
+                    let oprations=sessionStorage.getItem('operationData')
+                    this.operationData=JSON.parse(oprations)
+
+                    let need=sessionStorage.getItem('operationData')
+                    let businessDatas=dest[1].data  //业务分类数据
+                    let businessData=JSON.stringify(businessDatas)
+                    sessionStorage.setItem('businessData',businessData)
+                    let business=sessionStorage.getItem('businessData')
+                    this.businessData=JSON.parse(business)
+
+                    let priceleveDatas=dest[2].data  //课价水平数据
+                    let priceleveData=JSON.stringify(priceleveDatas)
+                    sessionStorage.setItem('priceleveData',priceleveData)
+                    let priceleve=sessionStorage.getItem('priceleveData')
+                    this.priceleveData=JSON.parse(priceleve)
+
+                    let regionDatas=dest[3].data  //目标区域数据
+                    let regionData=JSON.stringify(regionDatas)
+                    sessionStorage.setItem('regionData',regionData)
+                    let region=sessionStorage.getItem('regionData')
+                    this.regionData=JSON.parse(region)
+
+                    let cluesDatas=dest[5].data //线索模板数据
+                    let cluesData=JSON.stringify(cluesDatas)
+                    sessionStorage.setItem('cluesData',cluesData)
+                    let clues=sessionStorage.getItem('cluesData')
+                    this.cluesData=JSON.parse(clues)
 
                 }).catch(()=>{
 
@@ -757,7 +824,9 @@
                             })
                         }
                         console.log(brand)
-                     this.brands=brand;
+                    let brad=sessionStorage.getItem('brandData')
+                    let brandDatas=JSON.parse(brad)
+                    this.brands=brandDatas;
                    // this.reload();
 
 
@@ -767,13 +836,6 @@
                 }))
             }
         },
-      /*  watch: {
-
-            '$route' (to, from) {
-
-                this.$router.go(0);
-
-            }}*/
     }
 
 </script>

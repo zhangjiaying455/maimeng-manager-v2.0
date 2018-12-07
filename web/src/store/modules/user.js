@@ -43,22 +43,25 @@ const user = {
         const password=md5(userInfo.password)
       return new Promise((resolve, reject) => {
         login(username,password).then(response => {
+            debugger
+              console.log(response)
               console.log(response.data)
-              setToken(response.data)
-              commit('SET_TOKEN', response.data);
+              setToken(response.data.data)
+              commit('SET_TOKEN', response.data.data);
           resolve()
         }).catch(error => {
+            debugger
           reject(error)
         })
       })
     },
       //字典管理
-      dictionary({ commit }){
+    dictionary({ commit }){
         return new Promise((resolve , reject)=>{
             dictionary().then(response=>{
-                const data=response.data
-                console.log(data.data)
-                commit('SET_DICT', data.data);
+                const data=response.data.data
+                console.log(data)
+                commit('SET_DICT', data);
                 resolve()
             }).catch(error=>{
                 reject(error)
