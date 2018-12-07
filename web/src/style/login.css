@@ -188,3 +188,8 @@ input:-ms-input-placeholder{
 input::-webkit-input-placeholder{
     color: #b4b4b4;
 }
+.login-page .el-form-item__error{
+    position: absolute;
+    top: 80%;
+}
+

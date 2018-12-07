@@ -34,3 +34,6 @@ npm run dev (访问线上后台系统)
 
 
 axios发delete  删除   method:delete    不能是methods:delete
+
+默认账号 admin   123456
+新建账号18723923324   123456

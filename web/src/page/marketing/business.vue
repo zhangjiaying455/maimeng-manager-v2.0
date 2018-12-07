@@ -70,6 +70,14 @@
                    </template>
                </el-table-column>
            </el-table>
+           <div class="pager-left" v-if="pag_show">
+               <span>每页显示：</span>
+               <select id="pager-size" @change="change_size">
+                   <option value="10">每页显示10条</option>
+                   <option value="20">每页显示20条</option>
+                   <option value="50">每页显示50条</option>
+               </select>
+           </div>
            <div class="pagination_content" style="text-align: right;margin-top: 10px;">
                <el-pagination
                    v-if="pag_show"
@@ -77,11 +85,11 @@
                    @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
                    :current-page="currentPage"
-                   :page-sizes="[10, 20, 30, 40]"
                    :page-size="pageSize"
-                   layout=" sizes, prev, pager, next,total, jumper"
+                   layout="prev, pager, next,total, jumper"
                    :total="total">
                </el-pagination>
+                  <!-- :page-sizes="[10, 20, 30, 40]"-->
            </div>
        </div>
    </div>
@@ -205,8 +213,15 @@
                             }
                         }
                     }
-                    this.needstateData=dest[4].data  //需求状态数据
-                    console.log(this.needstateData)
+                    let needstateDatas=dest[4].data  //需求状态数据
+                    //转换Json数组为Json字符串
+                    let needstateData1=JSON.stringify(needstateDatas)
+                    //存储需求状态数组  Json字符串
+                    sessionStorage.setItem('needstatedData',needstateData1)
+                    //取出存在sessionStorge里面的Json字符串，转换为Json数组
+                    let needStates=sessionStorage.getItem('needstatedData')
+                    let needState=JSON.parse(needStates)
+                    this.needstateData=needState
                 }).catch(()=>{
 
                 })
@@ -348,6 +363,10 @@
                 this.$router.push({
                     path:'/clue_management'
                 })
+            },
+            change_size(){
+                this.pageSize=document.getElementById("pager-size").value;
+                this.search();
             }
 
         },
@@ -380,6 +399,27 @@
     .business-list .btn-search{
         height: 35px;
         line-height: 15px;
+    }
+   .pager-left{
+        float: left;
+        width: 200px;
+        margin-top: 15px;
+    }
+    .pager-left select{
+        color: #c9c7c7;
+        font-size: 12px;
+        border:1px solid #eaeaea;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        height: 28px;
+    }
+    .business-list .btn-small{
+        position: absolute;
+        right: 30px;
+    }
+    .business-list .el-table th>.cell{
+        text-align: center;
     }
 
     //表头颜色为白色
@@ -452,6 +492,7 @@
         color: #b9b9b9;
         font-size: 14px;
     }
+
     .btn-small{
         min-width: 80px;
         height: 24px;

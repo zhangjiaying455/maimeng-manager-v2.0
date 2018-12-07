@@ -1,5 +1,5 @@
 <template>
-    <div class="container login">
+    <div class="container login-page">
         <div class="login-top">
             <div class="top-center">
                 <img src="../images/login/login-title.png">
@@ -10,20 +10,23 @@
         </div>
         <div class="login-content">
             <div class="content-center">
-                <el-form class="login-box" :model="loginForm" :rules="rules" ref="loginForm">
+                <el-form class="login-box" :model="loginForm"  status-icon :rules="rules1" ref="loginForm">
                     <h3>登录</h3>
-                    <el-form-item class="input">
-                        <span class="icon-user"></span><input id="username"  v-model="loginForm.username" type="text" value="" class="input-text" placeholder="请输入用户名"/>
-                        <div class="msg">请输入用户名</div>
+                    <el-form-item class="input" prop="username">
+                       <!-- <span class="icon-user"></span>
+                        <input id="username"  v-model="loginForm.username" type="text" value="" class="input-text" placeholder="请输入用户名"/>
+                        <div class="msg">请输入用户名</div>-->
+                        <el-input  class="sizeText iconfont icon-xingmingyonghumingnicheng-copy" placeholder="请输入用户名" v-model="loginForm.username"></el-input>
                     </el-form-item>
-                    <el-form-item class="input">
-                        <span class="icon-password"></span><input id="password" v-model="loginForm.password" type="password" value="" class="input-text" placeholder="请输入密码"/>
-                        <div class="msg">请输入密码</div>
+                    <el-form-item class="input" prop="password">
+                        <el-input type="password"  class="sizeText iconfont icon-mima1" placeholder="请输入密码" v-model="loginForm.password"></el-input>
+                       <!-- <span class="icon-password"></span><input id="password" v-model="loginForm.password" type="password" value="" class="input-text" placeholder="请输入密码"/>
+                        <div class="msg">请输入密码</div>-->
                     </el-form-item>
                     <el-form-item class="forget-password">
                         <a href="javascript:void(0)" @click="password">忘记密码?</a>
                     </el-form-item>
-                    <el-button type="button" class="btn" id="login-btn" @click="handleLogin">登录</el-button>
+                    <el-button type="button" class="btn" id="login-btn" @click="handleLogin('loginForm')">登录</el-button>
                     <el-form-item class="register">
                         <span>还没有账号？</span>
                         <a href="javascript:void(0)" @click="register">立即注册 >></a>
@@ -45,13 +48,13 @@
 	    data(){
 			return {
 				loginForm: {
-					username: 'admin',
-					password: '123456',
+					username: '',
+					password: '',
 				},
                 checked:false,
-				rules: {
+				rules1: {
 					username: [
-			            { required: true, message: '请输入用户名', trigger: 'blur' },
+			            { required: true, message: '请输入用户名', trigger: 'blur' ,style: 'top:80%'},
 			        ],
 					password: [
 						{ required: true, message: '请输入密码', trigger: 'blur' }
@@ -67,7 +70,7 @@
 		},
 		methods: {
             //点击登录
-            handleLogin() {
+            handleLogin(loginForm) {
                 debugger
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
@@ -81,8 +84,9 @@
                             this.$router.push({
                                 path:'/manage'
                             })
-                        }).catch(()=>{
-
+                        }).catch((error)=>{
+                            debugger
+                            console.log(error)
                         })
                     } else {
                         console.log("error submit!!");
@@ -117,4 +121,33 @@
 
 <style lang="less" scoped>
     @import "../style/login.css";
+
+
+
+    /*.sizeText[data-v-71f5339d] .el-form-item__error{
+        !*color: #1d90e6 !important;*!
+        position: absolute !important;
+        top: 60% !important;
+        left: 35px !important;
+    }*/
+    .icon-xingmingyonghumingnicheng-copy:before {
+        content: "\E600";
+        position: absolute;
+        left: 10px;
+        color: #1d90e6;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+    .icon-mima1:before{
+        position: absolute;
+        left: 10px;
+        color: #1d90e6;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+    .sizeText{
+        font-size: 12px;
+        padding-left: 25px;
+    }
+
 </style>

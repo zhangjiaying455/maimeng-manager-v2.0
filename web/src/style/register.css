@@ -195,6 +195,8 @@ body{
     line-height: 22px;
     text-align: center;
     cursor: pointer;
+    position: absolute;
+    right: 120px;
 }
 .btn-common{
     width: 330px;
@@ -224,3 +226,9 @@ input:-ms-input-placeholder{
 input::-webkit-input-placeholder{
     color: #b4b4b4;
 }
+.register .el-form-item__error{
+    top: 100%;
+    left: 120px
+}
+
+

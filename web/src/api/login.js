@@ -1,5 +1,6 @@
 import request from '@/untils/request'
 import   Qs  from  'qs'
+//登录
 export function login(username,password) {
     return request({
         headers: {
@@ -18,6 +19,7 @@ export function login(username,password) {
         }
     })
 }
+//字典管理
 export function dictionary() {
     return request({
         headers: {
