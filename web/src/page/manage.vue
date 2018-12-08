@@ -66,6 +66,7 @@
                             <i class="alignment iconfont icon-touch_app"></i><span class="text">触达系统</span>
                         </template>
                         <el-menu-item index="statistical">智能外呼</el-menu-item>
+                        <el-menu-item index="call_center">呼叫中心</el-menu-item>
                         <el-menu-item index="platform">投放平台</el-menu-item>
                         <el-menu-item index="sms_touch">短信触达</el-menu-item>
                     </el-submenu>

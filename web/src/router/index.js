@@ -20,6 +20,7 @@ const labelFeatureManagement = r => require.ensure([], () => r(require('@/page/d
 const modelDataManagement = r => require.ensure([], () => r(require('@/page/data/modelDataManagement')), 'modelDataManagement');
 const crowdPackManagement = r => require.ensure([], () => r(require('@/page/data/crowdPackManagement')), 'crowdPackManagement');
 const statistical = r => require.ensure([], () => r(require('@/page/touch/statistical')), 'statistical');
+const call_center = r => require.ensure([], () => r(require('@/page/touch/call_center')), 'call_center');
 const platform = r => require.ensure([], () => r(require('@/page/touch/platform')), 'platform');//投放平台
 const sms_touch = r => require.ensure([], () => r(require('@/page/touch/sms_touch')), 'sms_touch');//短信触达
 const certification = r => require.ensure([], () => r(require('@/page/account/certification')), 'certification');//企业认证
@@ -28,8 +29,6 @@ const role = r => require.ensure([], () => r(require('@/page/account/role')), 'r
 const role_edit = r => require.ensure([], () => r(require('@/page/account/role_edit')), 'role_edit');
 const role_info = r => require.ensure([], () => r(require('@/page/account/role_info')), 'role_info');
 const subaccount = r => require.ensure([], () => r(require('@/page/account/subaccount')), 'subaccount');//子账号管理
-const subaccount_edit = r => require.ensure([], () => r(require('@/page/account/subaccount_edit')), 'subaccount_edit');
-const subaccount_info = r => require.ensure([], () => r(require('@/page/account/subaccount_info')), 'subaccount_info');
 const thread = r => require.ensure([], () => r(require('@/page/marketing/thread')), 'thread');//线索管理
 const monitoring = r => require.ensure([], () => r(require('@/page/marketing/monitoring')), 'monitoring');//数据监测
 const bordereaux = r => require.ensure([], () => r(require('@/page/marketing/bordereaux')), 'bordereaux');//业务报表
@@ -40,9 +39,6 @@ const clue_management = r => require.ensure([], () => r(require('@/page/marketin
 
 /*addGoods*/
 /*const createRole = r => require.ensure([], () => r(require('@/page/account/createRole')), 'createRole');*/
-
-
-
 
 const routes = [
 	{
@@ -147,6 +143,11 @@ const routes = [
                 meta: ['触达系统','智能外呼'],
             },
             {
+                path: '/call_center',
+                component: call_center,
+                meta: ['触达系统','呼叫中心'],
+            },
+            {
                 path: '/platform',
                 component: platform,
                 meta: ['触达系统','投放平台'],
@@ -184,16 +185,6 @@ const routes = [
             {
                 path: '/subaccount',
                 component: subaccount,
-                meta: ['账号管理','子账号管理'],
-            },
-            {
-                path: '/subaccount_edit',
-                component: subaccount_edit,
-                meta: ['账号管理','子账号管理'],
-            },
-            {
-                path: '/subaccount_info',
-                component: subaccount_info,
                 meta: ['账号管理','子账号管理'],
             }
         ]

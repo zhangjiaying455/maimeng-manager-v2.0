@@ -4,7 +4,7 @@
             <div class="top-center">
                 <img src="../images/login/login-title.png">
                 <div class="top-right">
-                    <a href="#">麦盟官网</a> | <a href="#">帮助中心</a>
+                    <a href="http://www.maimenggroup.com/" target="_blank">麦盟官网</a> | <a href="#">帮助中心</a>
                 </div>
             </div>
         </div>

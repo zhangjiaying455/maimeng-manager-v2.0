@@ -203,7 +203,7 @@ textarea::-webkit-input-placeholder{
 }
 .btn-search{
     width: 120px;
-    height: 30px;
+    height: 34px;
     background-color: #007bc4;
     color: #ffffff;
     font-size: 14px;
@@ -334,6 +334,9 @@ textarea::-webkit-input-placeholder{
     color: #b9b9b9;
     font-size: 14px;
     padding: 10px 15px;
+}
+select.txt-common{
+    height: 34px;
 }
 /*form-common-end*/
 
