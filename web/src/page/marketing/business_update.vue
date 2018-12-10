@@ -788,9 +788,7 @@
                                 brandName:bra[i]
                             })
                         }
-                    let brad=sessionStorage.getItem('brandData')
-                    let brandDatas=JSON.parse(brad)
-                    this.brands=brandDatas;
+                    this.brands=brand;
                 }).catch((error=>{
                 }))
             }

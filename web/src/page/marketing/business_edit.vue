@@ -478,8 +478,6 @@
                     this.second_step=true
                     arr[1].classList.add("over")
                 }
-
-
             },
             checkFirst(){
                 let arr = document.getElementsByClassName("tab_item");

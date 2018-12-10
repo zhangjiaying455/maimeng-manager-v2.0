@@ -12,14 +12,15 @@
             <div class="content-center">
                 <div class="content-title">
                     <p>账号安全</p>
+                    <a href="javascript:void(0)" @click="login">返回登录</a>
                 </div>
                 <div class="content-box">
                     <ul class="menu-list">
-                        <li class="over">验证手机号</li>
-                        <li>修改密码</li>
-                        <li>找回密码</li>
+                        <li class="tab_item over">验证手机号</li>
+                        <li class="tab_item">修改密码</li>
+                        <li class="tab_item">找回密码</li>
                     </ul>
-                    <el-form class="form-box" id="step-1" v-show="first_step" :model="amendPassForm"  status-icon :rules="rules1" ref="amendPassForm">
+                    <el-form class="form-box" id="step-1" v-show="first_step" :model="amendPassForm"  status-icon  ref="amendPassForm">
                         <el-form-item class="form-input" prop="phone">
                             <span class="input-left">手机号码</span>
                             <el-input v-model="amendPassForm.phone" placeholder="请输入您的手机号码"></el-input>
@@ -27,13 +28,13 @@
                         <el-form-item class="form-input" prop="code">
                             <span class="input-left">验证码</span>
                             <el-input  v-model="amendPassForm.code"  placeholder="请输入短信验证码"></el-input>
-                            <button type="button" class="btn-small">获取验证吗</button>
+                            <button type="button" class="btn-small">获取验证码</button>
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-check-info" @click="checkFirst">下一步</button>
                         </div>
                     </el-form>
-                    <el-form class="form-box" id="step-2" v-show="second_step" :model="amendPassForm"  status-icon :rules="rules1" ref="amendPassForm">
+                    <el-form class="form-box" id="step-2" v-show="second_step" :model="amendPassForm"  status-icon  ref="amendPassForm">
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">设置密码</span>
                             <el-input v-model="amendPassForm.password" placeholder="设置密码"></el-input>
@@ -82,7 +83,14 @@
            }
        },
         methods:{
+            login(){
+                this.$router.push({
+                    path:'/'
+                })
+                this.reload()
+            },
             checkFirst(){
+
                 if(this.amendPassForm.phone == ''){
                    this.$message.error("请输入手机号")
                 }else if(this.amendPassForm.code == ''){
@@ -90,6 +98,9 @@
                 }else{
                     this.first_step=false
                     this.second_step=true
+                    let arr=document.getElementsByClassName('tab_item')
+                    arr[0].classList.remove("over")
+                    arr[1].classList.add("over")
                 }
             },
             checkSecond(amendPassForm){
@@ -103,6 +114,7 @@
                         if (validate) {
                             let pass=md5(this.amendPassForm.password)
                             let password=pass.toLowerCase()
+                            let arr=document.getElementsByClassName('tab_item')
                             return request({
                                 method:'put',
                                 headers: {
@@ -119,7 +131,9 @@
                                 }
                             }).then((res)=>{
                                 this.second_step=false,
-                                this.third_step=true
+                                this.third_step=true,
+                                arr[1].classList.remove("over")
+                                arr[2].classList.add("over")
                             }).catch((error)=>{
                             })
                         }
@@ -149,4 +163,7 @@
         margin-bottom: 18px;
     }
     .password .form-input{position: relative}
+    .password .btn-common:hover{
+        background-color: #046dac;
+    }
 </style>

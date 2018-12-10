@@ -37,3 +37,8 @@ axios发delete  删除   method:delete    不能是methods:delete
 
 默认账号 admin   123456
 新建账号18723923324   123456
+
+测试bug:
+  忘记密码下一步样式
+  业务需求线索添加业务传参
+
