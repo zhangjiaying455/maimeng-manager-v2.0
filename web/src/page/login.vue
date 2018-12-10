@@ -13,15 +13,10 @@
                 <el-form class="login-box" :model="loginForm"  status-icon :rules="rules1" ref="loginForm">
                     <h3>登录</h3>
                     <el-form-item class="input" prop="username">
-                       <!-- <span class="icon-user"></span>
-                        <input id="username"  v-model="loginForm.username" type="text" value="" class="input-text" placeholder="请输入用户名"/>
-                        <div class="msg">请输入用户名</div>-->
                         <el-input  class="sizeText iconfont icon-xingmingyonghumingnicheng-copy" placeholder="请输入用户名" v-model="loginForm.username"></el-input>
                     </el-form-item>
                     <el-form-item class="input" prop="password">
                         <el-input type="password"  class="sizeText iconfont icon-mima1" placeholder="请输入密码" v-model="loginForm.password"></el-input>
-                       <!-- <span class="icon-password"></span><input id="password" v-model="loginForm.password" type="password" value="" class="input-text" placeholder="请输入密码"/>
-                        <div class="msg">请输入密码</div>-->
                     </el-form-item>
                     <el-form-item class="forget-password">
                         <a href="javascript:void(0)" @click="password">忘记密码?</a>
@@ -41,9 +36,7 @@
 </template>
 
 <script>
-	// import {login, getAdminInfo} from '@/api/getData'
 	import {mapActions, mapState} from 'vuex'
-
 	export default {
 	    data(){
 			return {
@@ -71,12 +64,10 @@
 		methods: {
             //点击登录
             handleLogin(loginForm) {
-                debugger
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
                         this.loading = true;
                         const res=this.$store.dispatch("Login", this.loginForm).then(()=>{
-                            debugger
                             this.$message({
                                 type:'success',
                                 message:'登录成功'
@@ -85,11 +76,8 @@
                                 path:'/manage'
                             })
                         }).catch((error)=>{
-                            debugger
-                            console.log(error)
                         })
                     } else {
-                        console.log("error submit!!");
                         return false;
                     }
                 });
@@ -121,15 +109,6 @@
 
 <style lang="less" scoped>
     @import "../style/login.css";
-
-
-
-    /*.sizeText[data-v-71f5339d] .el-form-item__error{
-        !*color: #1d90e6 !important;*!
-        position: absolute !important;
-        top: 60% !important;
-        left: 35px !important;
-    }*/
     .icon-xingmingyonghumingnicheng-copy:before {
         content: "\E600";
         position: absolute;

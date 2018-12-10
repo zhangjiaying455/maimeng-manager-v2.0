@@ -19,44 +19,23 @@
                         <el-form-item class="form-input" prop="phone">
                             <span class="input-left">手机号码</span>
                             <el-input v-model="registerForm.phone" placeholder="请输入您的手机号"></el-input>
-                            <!--<span class="input-middle">
-                                <input v-model="phone" type="text" value="" class="txt-common" placeholder="请输入您的手机号码">
-                            </span>
-                            <span class="input-right wrong">账号不存在</span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="code">
                             <span class="input-left">验证码</span>
                             <el-input  v-model="registerForm.code"  placeholder="请输入短信验证码"></el-input>
                             <button type="button" class="btn-small">获取验证吗</button>
-                            <!--<span class="input-middle">
-                                <input v-model="code" type="text" value="" class="txt-common" placeholder="请输入短信验证码">
-                                <button type="button" class="btn-small">获取验证码</button>
-                            </span>
-                            <span class="input-right">验证码错误</span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="companyName">
                             <span class="input-left">公司名称</span>
                             <el-input v-model="registerForm.companyName" placeholder="请输入公司名称"></el-input>
-                            <!--<span class="input-middle">
-                                <input v-model="companyName" type="text" value="" class="txt-common" placeholder="请输入公司名称">
-                            </span>
-                            <span class="input-right"></span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="name">
                             <span class="input-left">称呼</span>
                             <el-input v-model="registerForm.name" placeholder="请输入您的称呼，如王先生"></el-input>
-                            <!--<span class="input-middle">
-                                <input v-model="name" type="text" value="" class="txt-common" placeholder="请输入您的称呼，如王先生">
-                            </span>
-                            <span class="input-right"></span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">密码</span>
                             <el-input v-model="registerForm.password" placeholder="请输入6-16位数字或字母组成的密码"></el-input>
-                           <!-- <span class="input-middle">
-                                <input v-model="password" type="text" value="" class="txt-common" placeholder="请输入6-16位数字或字母组成的密码">
-                            </span>
-                            <span class="input-right"></span>-->
                         </el-form-item>
                         <el-form-item class="form-checkbox">
                             <input type="checkbox" checked="checked"> 我已阅读并同意《麦盟网站服务条款》
@@ -73,7 +52,6 @@
         </div>
     </div>
 </template>
-
 <script>
     import md5 from 'js-md5'
     import request from '@/untils/request'
@@ -120,9 +98,7 @@
             submitReg(registerForm){
                 this.$refs.registerForm.validate(validate=>{
                     if(validate){
-                        debugger
                         let password=md5(this.registerForm.password)
-                        console.log(password)
                         return request({
                             method:'post',
                             url:'/authserver/user/regist',
@@ -140,9 +116,6 @@
                                 password:password
                             }
                         }).then((res)=>{
-                            debugger
-                            debugger
-                            console.log(res)
                             this.$message({
                                 type:'success',
                                 message:'注册成功'
@@ -151,9 +124,6 @@
                                 path:'/'
                             })
                         }).catch((error)=>{
-                            debugger
-                            debugger
-                            console.log(error)
                         })
                     }
 

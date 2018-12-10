@@ -46,4 +46,3 @@ export function logout() {
         method: 'post'
     })
 }
-console.log()

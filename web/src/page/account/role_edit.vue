@@ -108,7 +108,6 @@
             //初始化权限信息集合
             if(this.menus.level1.length<=0){
                 this.get_menus(0);
-                //console.log(this.menus);
             }
         },
         methods:{
@@ -117,7 +116,6 @@
                     method:'get',
                     url:'mai-meng-cloud/role/'+this.role.id,
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.role.name=res.data.data.role.name;
                         this.role.sign=res.data.data.role.sign;
@@ -136,11 +134,9 @@
                             this.role.menu_list=[];
                         }
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据异常，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据异常，请刷新重试');
                 }));
             },
@@ -149,7 +145,6 @@
                     let boxs=document.getElementsByName("checkbox");
                     for(let i=0;i<this.role.menu_list.length;i++){
                         for(let k=0;k<boxs.length;k++){
-                            //console.log(this.role.menu_list[i])
                             if(boxs[k].value==this.role.menu_list[i]){
                                 boxs[k].checked=true;
                             }
@@ -228,8 +223,6 @@
                         parentId:id,
                     }
                 }).then((res)=>{
-                    //console.log("data-"+id);
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         if(id==0){
                             this.menus.level1=res.data.data;
@@ -243,10 +236,8 @@
                             });
                         }
                     }else{
-                        console.log(res.data);
                     }
                 }).catch((error=>{
-                    console.log(error);
                 }));
             },
             save_menus(){
@@ -263,7 +254,6 @@
                                 childMenus:[]
                             });
                         }else{
-                            //console.log("level-2");
                             for(let j=0;j<this.role.menus.length;j++){
                                 if(this.role.menus[j].group==chklist[i].getAttribute("data-pid")){
                                     this.role.menus[j].childMenus.push({
@@ -307,7 +297,6 @@
                                 "menuIds":this.role.menu_list
                             }
                         }).then((res)=>{
-                            //console.log(res.data);
                             if(res.data.code=="200"){
                                 this.$message({
                                     type: 'success',
@@ -315,11 +304,9 @@
                                 });
                                 this.cancel();
                             }else{
-                                console.log(res.data);
                                 this.$message.error('添加失败');
                             }
                         }).catch((error=>{
-                            console.log(error);
                             this.$message.error('添加失败');
                         }));
                     }else{
@@ -340,7 +327,6 @@
                                 "menuIds":this.role.menu_list
                             }
                         }).then((res)=>{
-                            //console.log(res.data);
                             if(res.data.code=="200"){
                                 this.$message({
                                     type: 'success',
@@ -348,11 +334,9 @@
                                 });
                                 this.cancel();
                             }else{
-                                console.log(res.data);
                                 this.$message.error('修改失败');
                             }
                         }).catch((error=>{
-                            console.log(error);
                             this.$message.error('修改失败');
                         }));
                     }
