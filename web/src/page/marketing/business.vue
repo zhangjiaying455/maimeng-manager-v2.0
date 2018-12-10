@@ -63,7 +63,7 @@
                    <template slot-scope="scope">
                        <el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
                        <el-button type="text" size="small" @click="editor(scope.row)">编辑</el-button>
-                       <el-button type="text" size="small" @click="clue">线索</el-button>
+                       <el-button type="text" size="small" @click="clue(scope.row)">线索</el-button>
                    </template>
                </el-table-column>
            </el-table>
@@ -103,6 +103,7 @@
                 pag_show:true,
                 needstateData:[],
                 tableName:[],
+                demandName:'',
                 pickerOptions1: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
@@ -336,10 +337,19 @@
                     });
                 })
             },
-            clue(){
+            clue(row){
+                console.log(row)
+                this.rowId=row.id
+                this.rowName=row.name
                 this.$router.push({
-                    path:'/clue_management'
+                    path:'/clue_management',
+                    query:{
+                        rowId:this.rowId,
+                        rowName:this.rowName
+                    }
+
                 })
+                this.reload()
             },
             change_size(){
                 this.pageSize=document.getElementById("pager-size").value;

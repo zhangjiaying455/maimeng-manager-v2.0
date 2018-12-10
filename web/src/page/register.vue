@@ -35,7 +35,7 @@
                         </el-form-item>
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">密码</span>
-                            <el-input v-model="registerForm.password" placeholder="请输入6-16位数字或字母组成的密码"></el-input>
+                            <el-input type="password" v-model="registerForm.password" placeholder="请输入6-16位数字或字母组成的密码"></el-input>
                         </el-form-item>
                         <el-form-item class="form-checkbox">
                             <input type="checkbox" checked="checked"> 我已阅读并同意《麦盟网站服务条款》
@@ -147,5 +147,8 @@
     }
     .register .form-input{position: relative}
 
+    .register .btn-common:hover{
+        background-color: #046dac;
+    }
 
 </style>

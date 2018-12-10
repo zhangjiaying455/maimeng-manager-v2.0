@@ -7,9 +7,12 @@
             <div class="search-item">
                 <span class="item-left">需求名称</span>
                 <span class="item-right">
-                   <el-select  v-model="demand.newDemand" @change="changeDemand($event)">
-                            <el-option value="" label="全部">全部</el-option>
-                            <el-option :label="item.name" :value="item.id"  v-for="item in nameData" :key="item.dKey">{{item.name}}</el-option>
+                   <el-select  v-model="demand.newDemand" @change="changeDemand($event)" >
+                       <el-option label="全部" value="">全部</el-option>
+                       <template v-for="item in nameData">
+                           <el-option :label="item.name" :value="item.id"  :key="item.dKey">{{item.name}}</el-option>
+                       </template>
+
                    </el-select>
                 </span>
             </div>
@@ -40,7 +43,7 @@
                     <p>查询符合上述条件得企业数据<span>{{this.total}}</span>条</p>
                 </div>
                 <div class="msg-right">
-                    <el-button type="button" class="btn-small" >推送数据</el-button>
+                    <!--<el-button type="button" class="btn-small" >推送数据</el-button>-->
                 </div>
             </div>
             <el-table
@@ -87,7 +90,7 @@
                     label="操作">
                     <template slot-scope="scope">
                         <i id="record" name="play" @change="hh(iconName)"  class="iconfont icon-round-headset_mic- color" @click="playPause(scope.row,scope.$index,$event)"></i>
-                        <i class="iconfont icon-xiangqing color"></i>
+                        <!--<i class="iconfont icon-xiangqing color"></i>-->
                     </template>
                 </el-table-column>
             </el-table>
@@ -134,6 +137,8 @@
                 endTime:'',
                 pag_show:true,
                 needstateData:[],
+                rowId:'',
+                rowName:'',
                 tableName:[],
                 pickerOptions1: {
                     disabledDate(time) {
@@ -166,6 +171,7 @@
                 currentPage: 1,
                 nameData:[],//需求名称下拉列表数组
                 demand:{
+                    id:'',
                     newDemand:'',
                     dName:''
                 }
@@ -173,9 +179,12 @@
             }
         },
         created(){
+            this.demand.newDemand=this.$route.query.rowName;
+
             this.requirements()
-            this.getDemandlist()
+            //this.getDemandlist()
             this.getDemand()
+            this.checkClue()
 
         },
         mounted(){
@@ -210,7 +219,12 @@
                 }
             },
             changeDemand(event){
+                // this.demand.id=event.target.value;
+                console.log("did");
+                // console.log(this.demand.id);
                 this.newDemand = event;
+                console.log(this.newDemand);
+
             },
             //获取业务需求数据
             requirements() {
@@ -257,13 +271,15 @@
                         size:1000
                     }
                 }).then((res)=>{
+                    let rowId=this.$route.query.rowId
+                    console.log(res.data.data.list)
                     this.nameData=res.data.data.list
                     let timeUpate=new Date()
                 }).catch((error)=>{
                 })
             },
             //获取列表
-            getDemandlist(){
+          /*  getDemandlist(){
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/thread',
@@ -275,6 +291,56 @@
                         size:this.pageSize
                     }
                 }).then((res)=>{
+                    this.tableData=res.data.data.list
+                    console.log()
+                    for (var i=0;i<this.tableData.length;i++){
+                        if (this.tableData[i].parentType==1){
+                            this.tableData[i].parentType='父亲'
+                        } else{
+                            this.tableData[i].parentType='母亲'
+                        }
+                        if(this.tableData[i].sex==1){
+                            this.tableData[i].sex='男'
+                        }else{
+                            this.tableData[i].sex='女'
+                        }
+                    }
+                    let data=res.data.data.list
+                    let timeUpate=new Date()
+                    this.total=res.data.data.totalCount
+                    if(this.total == 0){
+                        this.pag_show=false;
+                    }else{
+                        this.pag_show=true;
+                    }
+                    console.log(data)
+                }).catch((error)=>{
+                })
+            },*/
+            //点击线索查询
+            checkClue(){
+                let rowId=this.$route.query.rowId;
+                this.rowName=this.$route.query.rowName
+                let parm={
+                    demandId:rowId,
+                    beginDate:this.beginTime,
+                    endDate:this.endTime,
+                    page:this.currentPage-1,
+                    size:this.pageSize
+                }
+                console.log("trst");
+                console.log(parm);
+                console.log(rowId)
+                return request({
+                    methods:'get',
+                    url:'/mai-meng-cloud/thread',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    params:parm
+                }).then((res)=>{
+                    console.log("result");
+                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
@@ -297,6 +363,9 @@
                         this.pag_show=true;
                     }
                 }).catch((error)=>{
+                    debugger
+                    console.log("失败")
+
                 })
             },
             //查询
