@@ -236,7 +236,6 @@
                         size:1000
                     }
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         for(let i=0;i<res.data.data.list.length;i++){
                             let role={
@@ -246,11 +245,9 @@
                             this.roles.push(role);
                         }
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据初始化失败，请刷新重试');
                 }));
             },
@@ -273,8 +270,6 @@
                 if(this.search.roleId>0){
                     params.roleId=this.search.roleId;
                 }
-                //console.log(params);
-
                 return request({
                     method:'get',
                     url:'mai-meng-cloud/user',
@@ -283,18 +278,15 @@
                     },
                     params:params
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.list.data=res.data.data.list;
                         this.list.totalCount=res.data.data.totalCount;
                         this.list.totalPage=res.data.data.totalPage;
                         this.set_pagers(this.search.page,this.list.totalPage);
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据异常，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据异常，请刷新重试');
                 }));
             },
@@ -405,7 +397,6 @@
                         "state":state
                     }
                 }).then((res)=>{
-                    //console.log(res.data)
                     if(res.data.code=="200"){
                         this.$message({
                             type: 'success',
@@ -413,12 +404,9 @@
                         });
                         this.search_list();
                     }else{
-                        console.log(res.data);
                         this.$message.error('操作失败');
                     }
                 }).catch((error=>{
-                    debugger;
-                    console.log(error);
                     this.$message.error('操作失败');
                 }));
             },
@@ -479,7 +467,6 @@
                                 "state":this.account.state
                             }
                         }).then((res)=>{
-                            //console.log(res.data);
                             if(res.data.code=="200"){
                                 this.$message({
                                     type: 'success',
@@ -487,12 +474,10 @@
                                 });
                                 this.search_list();
                             }else{
-                                console.log(res.data);
                                 this.$message.error('操作失败');
                             }
                             this.dialog_edit=false;
                         }).catch((error=>{
-                            console.log(error);
                             this.$message.error('操作失败');
                         }));
                     }
@@ -534,7 +519,6 @@
                                 "roleId":this.account.roleid
                             }
                         }).then((res)=>{
-                            //console.log(res.data);
                             if(res.data.code=="200"){
                                 this.$message({
                                     type: 'success',
@@ -543,12 +527,10 @@
                                 this.search_list();
                                 this.reload();
                             }else{
-                                console.log(res.data);
                                 this.$message.error('操作失败');
                             }
                             this.dialog_edit=false;
                         }).catch((error=>{
-                            console.log(error);
                             this.$message.error('操作失败');
                         }));
                     }

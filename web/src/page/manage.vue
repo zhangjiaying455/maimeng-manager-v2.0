@@ -107,7 +107,6 @@
         methods: {
             ...mapActions(['getAdminData']),
               loginOut() {
-                debugger;
                   this.$confirm('是否退出登录', {
                       confirmButtonText: '退出',
                       cancelButtonText: '取消',

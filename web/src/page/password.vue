@@ -23,20 +23,11 @@
                         <el-form-item class="form-input" prop="phone">
                             <span class="input-left">手机号码</span>
                             <el-input v-model="amendPassForm.phone" placeholder="请输入您的手机号码"></el-input>
-                            <!--<span class="input-middle">
-                                <input v-model="phone" type="text" value="" class="txt-common" placeholder="请输入您的手机号码">
-                            </span>
-                            <span class="input-right wrong">账号不存在</span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="code">
                             <span class="input-left">验证码</span>
                             <el-input  v-model="amendPassForm.code"  placeholder="请输入短信验证码"></el-input>
                             <button type="button" class="btn-small">获取验证吗</button>
-                           <!-- <span class="input-middle">
-                                <input v-model="code" type="text" value="" class="txt-common" placeholder="请输入短信验证码">
-                                <button type="button" class="btn-small">获取验证码</button>
-                            </span>
-                            <span class="input-right">验证码错误</span>-->
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-check-info" @click="checkFirst">下一步</button>
@@ -46,18 +37,10 @@
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">设置密码</span>
                             <el-input v-model="amendPassForm.password" placeholder="设置密码"></el-input>
-                           <!-- <span class="input-middle">
-                                <input v-model="password" type="text" value="" class="txt-common" placeholder="设置密码">
-                            </span>-->
-                            <!--<span class="input-right wrong">密码不能为空</span>-->
                         </el-form-item>
                         <el-form-item class="form-input" prop="newPassword">
                             <span class="input-left">确认密码</span>
                             <el-input v-model="amendPassForm.newPassword" placeholder="确认密码"></el-input>
-                          <!--  <span class="input-middle">
-                                <input v-model="newPassword" type="text" value="" class="txt-common" placeholder="确认密码">
-                            </span>
-                            <span class="input-right">密码不能为空</span>-->
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-set-password" @click="checkSecond('amendPassForm')">下一步</button>
@@ -96,21 +79,6 @@
                first_step:true,
                second_step:false,
                third_step:false,
-              /* rules1: {
-                   phone: [
-                       { required: true, message: '请输入您的手机号', trigger: 'blur' },
-                   ],
-                    code: [
-                        { required: true, message: '请输入短信验证码', trigger: 'blur' }
-                    ],
-                   password: [
-                       { required: true, message: '请输入您的密码', trigger: 'blur' }
-                   ],
-                   newPassword: [
-                       { required: true, message: '请输入确认密码', trigger: 'blur' }
-                   ],
-
-               },*/
            }
        },
         methods:{
@@ -135,7 +103,6 @@
                         if (validate) {
                             let pass=md5(this.amendPassForm.password)
                             let password=pass.toLowerCase()
-                            debugger
                             return request({
                                 method:'put',
                                 headers: {
@@ -151,13 +118,9 @@
                                     password:password
                                 }
                             }).then((res)=>{
-                                debugger
                                 this.second_step=false,
-                                    this.third_step=true
-
+                                this.third_step=true
                             }).catch((error)=>{
-                                debugger
-                                console.log(error)
                             })
                         }
                     })

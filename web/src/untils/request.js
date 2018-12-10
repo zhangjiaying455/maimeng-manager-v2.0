@@ -8,8 +8,6 @@ const service = axios.create({
     baseURL: "http://47.92.107.76:88/api", // api的base_url
     timeout: 5000 // 请求超时时间
 })
-
-
 // request拦截器
 service.interceptors.request.use(config => {
       if (store.getters.token) {
@@ -23,8 +21,6 @@ service.interceptors.request.use(config => {
     // Do something with request error
     Promise.reject(error)
 });
-
-
 // respone拦截器
 service.interceptors.response.use(
     response => {
@@ -33,15 +29,11 @@ service.interceptors.response.use(
         */
         const res = response.data
         if (res.code !== 200) {
-            debugger
-            console.log(res.code)
-            console.log(res.message)
             Message({
                 message: res.message,
                 type: 'error',
                 duration: 5 * 1000
             })
-
 
         /*    // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
             if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
@@ -57,11 +49,7 @@ service.interceptors.response.use(
             }*/
             return Promise.reject('error')
         } else {
-            debugger
             return response
-           /* console.log(response)
-            console.log(response.data)
-            console.log(response.data.data)*/
         }
     },
     error => {
@@ -73,6 +61,4 @@ service.interceptors.response.use(
         // return Promise.reject(error)
     }
 )
-
-
 export default service

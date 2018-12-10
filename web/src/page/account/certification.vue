@@ -111,8 +111,6 @@
                     method:'get',
                     url:'mai-meng-cloud/company',
                 }).then((res)=>{
-                    //console.log("data-init");
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.company.name=res.data.data.name;
                         this.company.homePage=res.data.data.homePage;
@@ -122,11 +120,9 @@
                         this.company.brands=res.data.data.brands;
                         this.company.docs=res.data.data.docs;
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据初始化失败，请刷新重试');
                 }));
             },
@@ -135,7 +131,6 @@
                     method:'get',
                     url:'mai-meng-cloud/dict',
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         for(let i=0;i<res.data.data.length;i++){
                             if(res.data.data[i].groupId=="8"){
@@ -144,14 +139,16 @@
                                     "name":res.data.data[i].dValue
                                 }
                                 this.vocation.push(obj);
+                                let vocations=JSON.stringify(this.vocation)
+                                sessionStorage.setItem('vocation',vocations)
+                                let vocationB=sessionStorage.getItem('vocation')
+                                this.vocation=JSON.parse(vocationB)
                             }
                         }
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据初始化失败，请刷新重试');
                 }));
             },
@@ -234,18 +231,15 @@
                             "docs":this.company.docs
                         }
                     }).then((res)=>{
-                        //console.log(res.data);
                         if(res.data.code=="200"){
                             this.$message({
                                 type: 'success',
                                 message: '认证信息提交成功'
                             });
                         }else{
-                            console.log(res.data);
                             this.$message.error('数据提交失败');
                         }
                     }).catch((error=>{
-                        console.log(error);
                         this.$message.error('数据提交失败');
                     }));
                 }

@@ -1,8 +1,5 @@
 <template>
    <div class="main business-list">
-       <!--<el-breadcrumb  separator=">" class="headerTop">
-           <el-breadcrumb-item  v-for="(item,index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
-       </el-breadcrumb>-->
        <div class="nav">
            <span>营销管理 > 业务需求</span>
        </div>
@@ -94,7 +91,6 @@
        </div>
    </div>
 </template>
-
 <script>
     import request from '@/untils/request'
     import moment from 'moment'
@@ -165,11 +161,9 @@
             },
             handleSizeChange(pageSize) {//每页条数切换
                 this.pageSize=pageSize
-                console.log(`每页 ${pageSize} 条`);
             },
             handleCurrentChange(currentPage) {//页码切换
                this.currentPage=currentPage
-                console.log(this.currentPage)
                 this.getDemandlist()
             },
             tableHeaderColor({row, column, rowIndex, columnIndex}) {
@@ -183,7 +177,6 @@
                 })
             },
             changeDemandState(event){
-                console.log(event)
                 this.newDemandState = event;
             },
             //获取业务需求数据
@@ -228,7 +221,6 @@
             },
             //获取列表
             getDemandlist(){
-                debugger
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/demand',
@@ -240,8 +232,6 @@
                         size:this.pageSize
                     }
                 }).then((res)=>{
-                    debugger
-                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list;
                     for(var i=0;i<this.tableData.length;i++){
                         if(this.tableData[i].state==1){
@@ -257,7 +247,6 @@
                     let data=res.data.data.list
                      let timeUpate=new Date()
                     this.total=res.data.data.totalCount
-                    console.log(this.total)
                     if(this.total == 0){
                         this.pag_show=false;
                     }else{
@@ -265,14 +254,11 @@
                     }
 
                 }).catch((error)=>{
-                    debugger
-                    console.log(error)
 
                 })
             },
             //查询
             search(){
-                debugger
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/demand',
@@ -285,8 +271,6 @@
                         size:this.pageSize
                     }
                 }).then((res)=>{
-                    debugger
-                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list;
                     for(var i=0;i<this.tableData.length;i++){
                         if(this.tableData[i].state==1){
@@ -301,7 +285,6 @@
                     let data=res.data.data.list
                     let timeUpate=new Date()
                     this.total=res.data.data.totalCount
-                    console.log(this.total)
                     if(this.total == 0){
                         this.pag_show=false;
                     }else{
@@ -309,16 +292,12 @@
                     }
 
                 }).catch((error)=>{
-                    debugger
-                    console.log(error)
                 })
 
             },
             //编辑
             editor(row){
-                debugger
                 this.id=row.id
-                console.log(this.id)
                 this.$router.push({
                     path:'/business_update',
                     query:{
@@ -335,9 +314,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then((res)=>{
-                    debugger
                     this.id=row.id
-                    console.log(this.id)
                     return request({
                         method:'delete',
                         url:'/mai-meng-cloud/demand/'+this.id,
@@ -388,9 +365,7 @@
 
     }
 </script>
-
 <style lang="less">
-    /*@import '../../style/mixin';*/
     @import '../../style/main-common.css';
 
     .business-list .el-input{
@@ -421,125 +396,5 @@
     .business-list .el-table th>.cell{
         text-align: center;
     }
-
-    //表头颜色为白色
-    /*.el-table th > .cell{
-        background: #ffff;
-        height: 46px;
-        line-height: 46px;
-        text-align: center;
-    }
-    .main-search{
-        min-height: 60px;
-        margin-bottom: 10px;
-        background-color: #fff;
-
-        color: #000;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 24px;
-    }
-    .main-search .search-item{
-        float: left;
-        min-width: 190px;
-    }
-    .main-search .search-item span.item-left{
-        color: #333333;
-        font-size: 14px;
-    }
-    .main-table{
-       !* min-height: 400px;*!
-        background-color: #fff;
-    }
-    .main-table .table-msg .msg-left{
-        float: left;
-        text-align: left;
-    }
-    .main-table .table-msg .msg-left p{
-        color: #999999;
-        font-size: 14px;
-        line-height: 20px;
-    }
-    .main-table .table-msg .msg-left p span{
-        color: #007bc4;
-        font-weight: 600;
-    }
-    .main-table .table-msg .msg-right{
-        float: right;
-        text-align: right;
-    }
-    .txt-common{
-        width: 160px;
-        height: 30px;
-        border:1px solid #d6d6d6;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-
-        color: #b9b9b9;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 30px;
-
-    }
-    .txt-area{
-        width: 160px;
-        height: 135px;
-        border:1px solid #d6d6d6;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        color: #b9b9b9;
-        font-size: 14px;
-    }
-
-    .btn-small{
-        min-width: 80px;
-        height: 24px;
-        background-color: #ffffff;
-        color: #007bc4;
-        font-size: 14px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        border: 1px solid #007bc4;
-        outline: none;
-        line-height: 22px;
-        text-align: center;
-    }
-    .btn-small:hover{
-        background-color: #007bc4;
-        color: #ffffff;
-    }
-    .el-icon-arrow-left:before {
-        content: "上一页";
-    }
-    .el-icon-arrow-right:before {
-        content: "下一页";
-    }
-    .el-pagination{
-        float: right;
-    }
-    .pagination_content{
-        position: relative;
-        margin-top: 20px;
-    }
-    .el-pagination__sizes{
-        position: absolute;
-        left:20px;
-    }
-    .el-pagination__sizes:before{
-        content: "每页显示: ";
-    }
-    .box{
-        width: 100%;
-    }
-    .bottom {
-        text-align: center;
-        color: #afafaf;
-        font-size: 10px;
-    }
-    .el-table--fit{margin-top: 40px}
-    .item-right{display: inline-block}*/
 </style>
 

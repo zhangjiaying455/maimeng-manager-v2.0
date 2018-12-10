@@ -65,7 +65,6 @@
                     method:'get',
                     url:'mai-meng-cloud/role/'+id,
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.role.name=res.data.data.role.name;
                         this.role.sign=res.data.data.role.sign;
@@ -77,11 +76,9 @@
                             this.role.menus=res.data.data.menus;
                         }
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据异常，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据异常，请刷新重试');
                 }));
             },

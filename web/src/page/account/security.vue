@@ -116,16 +116,13 @@
                     method:'get',
                     url:'mai-meng-cloud/company',
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.mobile=res.data.data.mobile;
                         this.mobiles=res.data.data.mobile.substring(0,3)+"****"+res.data.data.mobile.substring(7,11);
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据初始化失败，请刷新重试');
                 }));
             },
@@ -173,7 +170,6 @@
                             mobile:this.dialog_mobile_info.mobile
                         }
                     }).then((res)=>{
-                        //console.log(res.data);
                         if(res.data.code=="200"){
                             this.init();
                             this.$message({
@@ -181,12 +177,10 @@
                                 message: '修改成功'
                             });
                         }else{
-                            console.log(res.data);
                             this.$message.error('操作失败');
                         }
                         this.dialog_mobile=false;
                     }).catch((error=>{
-                        console.log(error);
                         this.$message.error('操作失败');
                     }));
                 }
@@ -227,19 +221,16 @@
                             oldPassword:md5(this.dialog_password_info.password),
                         }
                     }).then((res)=>{
-                        //console.log(res.data);
                         if(res.data.code=="200"){
                             this.$message({
                                 type: 'success',
                                 message: '修改成功'
                             });
                         }else{
-                            console.log(res.data);
                             this.$message.error(res.data.message);
                         }
                         this.dialog_password=false;
                     }).catch((error=>{
-                        console.log(error);
                         this.$message.error('操作失败');
                     }));
                 }

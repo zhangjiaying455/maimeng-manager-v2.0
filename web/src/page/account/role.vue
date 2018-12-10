@@ -126,7 +126,6 @@
                         size:this.search.size
                     }
                 }).then((res)=>{
-                    //console.log(res.data);
                     if(res.data.code=="200"){
                         this.list.data=res.data.data.list;
                         this.list.totalCount=res.data.data.totalCount;
@@ -137,11 +136,9 @@
                         }
                         this.set_pagers(this.search.page,this.list.totalPage);
                     }else{
-                        console.log(res.data);
                         this.$message.error('数据异常，请刷新重试');
                     }
                 }).catch((error=>{
-                    console.log(error);
                     this.$message.error('数据异常，请刷新重试');
 
                 }));
@@ -235,7 +232,6 @@
                         method:'delete',
                         url:'/mai-meng-cloud/role/'+id,
                     }).then((res)=>{
-                        //console.log(res.data);
                         if(res.data.code=="200"){
                             this.$message({
                                 type: 'success',
@@ -243,12 +239,9 @@
                             });
                             this.search_list();
                         }else{
-                            console.log(res.data);
                             this.$message.error(res.data.message);
                         }
                     }).catch((error=>{
-                        console.log(error);
-                        //this.$message.error('操作失败');
                     }));
                 }).catch((error)=>{
                     this.$message({
