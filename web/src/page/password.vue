@@ -37,11 +37,11 @@
                     <el-form class="form-box" id="step-2" v-show="second_step" :model="amendPassForm"  status-icon  ref="amendPassForm">
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">设置密码</span>
-                            <el-input v-model="amendPassForm.password" placeholder="设置密码"></el-input>
+                            <el-input type="password" v-model="amendPassForm.password" placeholder="设置密码"></el-input>
                         </el-form-item>
                         <el-form-item class="form-input" prop="newPassword">
                             <span class="input-left">确认密码</span>
-                            <el-input v-model="amendPassForm.newPassword" placeholder="确认密码"></el-input>
+                            <el-input type="password" v-model="amendPassForm.newPassword" placeholder="确认密码"></el-input>
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-set-password" @click="checkSecond('amendPassForm')">下一步</button>
@@ -99,7 +99,6 @@
                     this.first_step=false
                     this.second_step=true
                     let arr=document.getElementsByClassName('tab_item')
-                    arr[0].classList.remove("over")
                     arr[1].classList.add("over")
                 }
             },
@@ -132,7 +131,6 @@
                             }).then((res)=>{
                                 this.second_step=false,
                                 this.third_step=true,
-                                arr[1].classList.remove("over")
                                 arr[2].classList.add("over")
                             }).catch((error)=>{
                             })

@@ -33,7 +33,7 @@
                        @change="getSendTime">
                    </el-date-picker>
                 </span>
-                <el-button type="button" class="btn-search" @click="search">查询</el-button>
+                <button type="button" class="btn-search" @click="search">查询</button>
             </div>
 
         </div>

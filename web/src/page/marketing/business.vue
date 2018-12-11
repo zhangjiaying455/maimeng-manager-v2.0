@@ -19,7 +19,7 @@
                                 </el-select>
                             </span>
            </div>
-           <el-button type="button" class="btn-search" @click="search">查询</el-button>
+           <button type="button" class="btn-search" @click="search">查询</button>
        </div>
        <div class="main-table">
            <div class="table-msg">

@@ -46,6 +46,9 @@
                         <a href="javascript:void(0)" @click="role_del(value.id)">删除</a>
                     </td>
                 </tr>
+                <tr v-if="list.totalPage<=0">
+                    <td colspan="6" style="background-color: #fafafa;">暂无数据</td>
+                </tr>
                 </tbody>
             </table>
             <div class="table-pager">
