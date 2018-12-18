@@ -61,12 +61,13 @@
 	    data(){
            return{
                registerForm:{
-                   phone:'',
-                   // code:'',
-                   companyName:'',
-                   name:'',
-                   password:'',
+                   phone:'',//手机号
+                   // code:'',//验证码
+                   companyName:'',//公司名称
+                   name:'',//称呼
+                   password:'',//密码
                },
+               //element-ui校验
                rules1: {
                    phone: [
                        { required: true, message: '请输入您的手机号', trigger: 'blur' },
@@ -88,13 +89,14 @@
            }
 		},
         methods:{
+            //使用已有账号登录 返回登录页
 	        login(){
 	            this.$router.push({
                     path:'/'
                 })
                 this.reload()
             },
-
+            //注册
             submitReg(registerForm){
                 this.$refs.registerForm.validate(validate=>{
                     if(validate){
@@ -124,12 +126,10 @@
                                 path:'/'
                             })
                         }).catch((error)=>{
-                        })
-                    }
-
+                      })
+                   }
                 })
-
-            }
+              }
             }
 	}
 </script>

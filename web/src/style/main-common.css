@@ -27,9 +27,9 @@ a,a:hover{
 }
 .containers{
     width: 100%;
-    height: 100%;
-    min-width: 1200px;
-    min-height: 600px;
+    height: 635px;
+    /*min-width: 1200px;
+    min-height: 600px*/;
     border: none;
     background-color: #f6f6f6;
 }
@@ -100,7 +100,7 @@ a,a:hover{
     background: url("../images/top-close-02.png") center center no-repeat;
 }
 .containers .box{
-    min-height: 800px;
+    /*min-height: 800px;*/
     padding-left: 245px;
     padding-right: 15px;
     margin: 0 auto;
@@ -114,7 +114,8 @@ a,a:hover{
 .containers .box .aside{
     position: relative;
     width:230px;
-    min-height: 800px;
+    height: 575px;
+    overflow: scroll;
     left: -248px;
     margin-left: -100%;
     background-color: #324157;
@@ -122,7 +123,8 @@ a,a:hover{
 .containers .box .content{
     width: 100%;
     margin-top: 15px;
-    min-height: 800px;
+    height: 550px;
+    overflow: scroll;
 }
 .containers .box .content .main{
     height: auto;
@@ -409,6 +411,9 @@ select.txt-common{
     line-height: 45px;
     text-align: center;
     border-top: 1px solid #eaeaea;
+    border-left: 1px solid #eaeaea;
+}
+.main-table table tr td:first-child{
     border-left: 1px solid #eaeaea;
 }
 .main-table table tr td{

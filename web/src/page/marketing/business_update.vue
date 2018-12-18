@@ -48,37 +48,37 @@
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>需求周期</span>
                             <span class="item-right">
-                                           <el-date-picker
-                                               v-model="newRole.beginTime"
-                                               type="date"
-                                               placeholder="选择日期"
-                                               @change="getSbeginTime">
-                                       </el-date-picker>
-                                       -
-                                       <el-date-picker
-                                           v-model="newRole.endTime"
-                                           type="date"
-                                           placeholder="选择日期"
-                                           @change="getSendTime">
-                                       </el-date-picker>
+                               <el-date-picker
+                                       v-model="newRole.beginTime"
+                                       type="date"
+                                       placeholder="选择日期"
+                                       @change="getSbeginTime">
+                               </el-date-picker>
+                               -
+                               <el-date-picker
+                                   v-model="newRole.endTime"
+                                   type="date"
+                                   placeholder="选择日期"
+                                   @change="getSendTime">
+                               </el-date-picker>
                                 <!--<input type="text" class="txt-common" value="" v-model="newRole.beginTime" style="width: 173px;"> - <input type="text" class="txt-common" v-model="newRole.endTime" value="" style="width: 172px;">-->
-                                    </span>
+                            </span>
                         </div>
                         <div class="info-item" >
                             <span class="item-left font-black"><span>*</span>运营模式</span>
                             <span class="item-right">
-                                        <el-select class="common"  v-model="newRole.operationMode"  @change="changeOperation($event)">
-                                            <el-option  :label="item.dValue" :value="item.dKey"  v-for="item in operationData"  :key="item.dKey">{{item.dValue}}</el-option>
-                                        </el-select>
-                                    </span>
+                                <el-select class="common"  v-model="newRole.operationMode"  @change="changeOperation($event)">
+                                    <el-option  :label="item.dValue" :value="item.dKey"  v-for="item in operationData"  :key="item.dKey">{{item.dValue}}</el-option>
+                                </el-select>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>业务分类</span>
                             <span class="item-right">
-                                        <el-select class="common" v-model="newRole.businessClassification" @change="changeClass($event)">
-                                            <el-option :label="item.dValue" :value="item.dKey"  v-for="item in businessData" :key="item.dKey">{{item.dValue}}</el-option>
-                                        </el-select>
-                                    </span>
+                                <el-select class="common" v-model="newRole.businessClassification" @change="changeClass($event)">
+                                    <el-option :label="item.dValue" :value="item.dKey"  v-for="item in businessData" :key="item.dKey">{{item.dValue}}</el-option>
+                                </el-select>
+                             </span>
                         </div>
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>年龄范围</span>
@@ -89,43 +89,43 @@
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>课价水平</span>
                             <span class="item-right">
-                                        <el-select class="common" v-model="newRole.priceLevel" @change="changeAcademic($event)">
-                                            <el-option :label="item.dValue" :value="item.dKey" v-for="item in priceleveData" :key="item.dKey">{{item.dValue}}</el-option>
-                                        </el-select>
-                                    </span>
+                                <el-select class="common" v-model="newRole.priceLevel" @change="changeAcademic($event)">
+                                    <el-option :label="item.dValue" :value="item.dKey" v-for="item in priceleveData" :key="item.dKey">{{item.dValue}}</el-option>
+                                </el-select>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>目标区域</span>
                             <span class="item-right">
-                                        <el-select class="common"  v-model="newRole.area"  @change="changeObject($event)">
-                                            <el-option :label='item.dValue' :value="item.dKey" v-for="item in regionData" :key="item.dKey">{{item.dValue}}</el-option>
-                                        </el-select>
-                                    </span>
+                                <el-select class="common"  v-model="newRole.area"  @change="changeObject($event)">
+                                    <el-option :label='item.dValue' :value="item.dKey" v-for="item in regionData" :key="item.dKey">{{item.dValue}}</el-option>
+                                </el-select>
+                            </span>
                         </div>
                     </div>
                     <div class="info-right">
                         <div class="info-item">
                             <span class="item-left font-black" style="vertical-align: top">补充说明</span>
                             <span class="item-right">
-                                        <textarea rows="5" cols="50" class="txt-area" v-model="newRole.supplementary"></textarea>
-                                    </span>
+                                <textarea rows="5" cols="50" class="txt-area" v-model="newRole.supplementary"></textarea>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="item-left font-black" style="vertical-align: top">产品材料</span>
                             <span class="item-right">
-
-                                        <el-upload
-                                            class="upload-demo"
-                                            ref="upload"
-                                            action="https://jsonplaceholder.typicode.com/posts/"
-                                            :on-preview="handlePreview"
-                                            :on-remove="handleRemove"
-                                            :file-list="fileList"
-                                            :auto-upload="false">
-                                       <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
-                                             <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
-                                        </el-upload>
-                                    </span>
+                                <el-upload
+                                    class="upload-demo"
+                                    ref="upload"
+                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :on-preview="handlePreview"
+                                    :on-remove="handleRemove"
+                                    :file-list="fileList"
+                                    :on-change="handleChange"
+                                    :auto-upload="false">
+                               <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
+                                     <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
+                                </el-upload>
+                             </span>
                         </div>
 
                     </div>
@@ -202,8 +202,8 @@
                     <div class="info-item">
                         <span class="item-left font-black"><span>*</span>自定义标签</span>
                         <span class="item-right">
-                                       <input type="text" class="txt-common" id="tag-title" value="" placeholder="标签不能超过10个字" v-if="inputVisible" v-model="inputValue" ref="saveTagInput">
-                                </span>
+                            <input type="text" class="txt-common" id="tag-title" value="" placeholder="标签不能超过10个字" v-if="inputVisible" v-model="inputValue" ref="saveTagInput">
+                         </span>
                     </div>
                     <div class="info-item">
                         <span class="item-left font-black" style="vertical-align: top">标签描述</span>
@@ -281,8 +281,10 @@
                         <div class="info-item">
                             <span class="item-left">产品介绍</span>
                             <span class="item-right">
-                                        {{this.fileList}}
-                                    </span>
+                                <ul>
+                                  <li v-for="item in fileList">{{item.name}}</li>
+                                </ul>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -357,17 +359,17 @@
     </div>
 </template>
 <script>
-    import {dictionary} from '@/api/login'
     import {mapActions, mapState,mapMutations} from 'vuex'
     import request from '@/untils/request'
     import moment from 'moment'
+    import OSS from 'ali-oss'
     export default{
-        inject:['reload'],
+        inject:['reload'],//注入reload  调用this.reload实现刷新
         data(){
             return{
                 params:'',
-                desc:'',
-              newRole:{
+                desc:'',//标签描述
+                newRole:{
                   demandName:'',//需求名称
                   supplementary:'',//补充说明
                   contactPerson:'',//业务负责人
@@ -384,30 +386,35 @@
                   area:'',//目标区域
                   userTags:'',//自定义标签
                   brand:'',//品牌名称
-              },
-                operationValue:'',//运营模式Value值
-                businessValue:'', //业务分类Value值
-                priceLevelValue:'',//课价分类Value值
-                areaValue:'',//目标区域Value值
-                fileList:[],
-                first_step:true,
-                second_step:false,
-                third_step:false,
-                four_step:false,
-                dynamicTags:[],
-                inputVisible: true,
-                inputValue: '',
-                operationDkey:'',
-                businessDkey:'',
-                priceleveDkey:'',
-                regionDkey:'',
-                operationData:[],//运营模式数据
-                businessData:[],//业务分类数据
-                priceleveData:[],//课价水平数据
-                regionData:[],//目标区域数据
-                cluesData:[],//线索模板数据
-                brands:[],
-                pickerOptions1: {
+                  docs:[],//上传的url
+                  },
+                  n_docs:[],
+                  brandEntityId:'',
+                  demandId:'',
+                  threadTemplateId:'',
+                  operationValue:'',//运营模式Value值
+                  businessValue:'', //业务分类Value值
+                  priceLevelValue:'',//课价分类Value值
+                  areaValue:'',//目标区域Value值
+                  fileList:[],//产品介绍数组
+                  first_step:true,//业务需求表单
+                  second_step:false,//品牌信息表单
+                  third_step:false,//线索模板表单
+                  four_step:false,//确认信息表单
+                  dynamicTags:[],//自定义标签数组
+                  inputVisible: true,
+                  inputValue: '',//自定义标签
+                  /* operationDkey:'',
+                  businessDkey:'',
+                  priceleveDkey:'',
+                  regionDkey:'',*/
+                  operationData:[],//运营模式数据
+                  businessData:[],//业务分类数据
+                  priceleveData:[],//课价水平数据
+                  regionData:[],//目标区域数据
+                  cluesData:[],//线索模板数据
+                  brands:[],//品牌数据数组
+                  pickerOptions1: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
                     },
@@ -416,49 +423,130 @@
                         onClick(picker) {
                             picker.$emit('pick', new Date());
                         }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
                     }]
-                },
-
-            }
+                },//日期组件
+             }
         },
         created(){
             this.getDictionary()
             this.getBrand()
             this.editor();
+
         },
         methods:{
+            //这个sTime是在data中声明的，也就是v-model绑定的值
             getSbeginTime(val){
-                this.newRole.beginTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
+                this.newRole.beginTime=val;
             },
+            //这个sTime是在data中声明的，也就是v-model绑定的值
             getSendTime(val){
-                this.newRole.endTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
+                this.newRole.endTime=val;
             },
-            ...mapActions(['dictionary']),
-            submitUpload() {
+            /* submitUpload() {
                 this.$refs.upload.submit();
-            },
+            },*/
+            //文件删除
             handleRemove(file, fileList) {
+                debugger
+                console.log(fileList);
+                console.log("eui-del-file-list")
+                let _this=this;
+                // let url="";
+                //this.fileList=fileList
+                // this.fileList = fileList.slice(-3);
+                let  client = new OSS({
+                    accessKeyId:'LTAIUEAyF5F1rtjD',
+                    accessKeySecret:'6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                    region: 'oss-cn-zhangjiakou', // oss地区
+                    bucket: 'cloud-mm'
+                })
+                const f =file.raw
+                const s=file.name
+                client.delete(s,f).then(function (r1) {
+                    debugger
+                    console.log(r1)
+                    if (r1.res.status === 204) {
+                        /*  let b=[]*/
+                        console.log('删除了')
+                        _this.n_docs.forEach((item,index)=>{
+                            debugger
+                            console.log(item.uid)
+                            if(item.uid == file.uid){
+                                _this.n_docs.splice(index,1)
+                                console.log(_this.n_docs)
+                            }
+                        })
+
+                    }
+                }).catch(function (err) {
+                    debugger
+                    console.log(err)
+                });
             },
+            //点击文件列表中已上传的文件时的钩子
             handlePreview(file) {
             },
-            handlePictureCardPreview(file) {
+            /*  handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
+            },*/
+            //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+            handleChange(file,fileList){
+                let _this = this;
+             /*   let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
+                const extension = testmsg === 'doc'
+                const extension2 = testmsg === 'pdf'
+                const extension3 = testmsg === 'ppt'
+                const isLt100M = file.size / 1024 / 1024 < 100;*/
+               /* if(!extension &&  !extension2 && !extension3) {
+                    debugger
+                    this.$message({
+                        message: '上传文件只能是 doc、pdf、ppt格式!',
+                        type: 'warning'
+                    });
+                    _this.fileList=_this.n_docs
+                    console.log(_this.fileList)
+                    this.reload()
+                }else if(!isLt100M){
+                    debugger
+                    this.$message.warning('上传头像图片大小不能超过 100MB!');
+                    _this.fileList=_this.n_docs
+                    console.log(_this.fileList)
+                    this.reload()
+                }else {*/
+                    let url = "";
+                    debugger
+                    let client = new OSS({
+                        accessKeyId: 'LTAIUEAyF5F1rtjD',
+                        accessKeySecret: '6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                        region: 'oss-cn-zhangjiakou', // oss地区
+                        bucket: 'cloud-mm'
+                    })
+                    const f = file.raw
+                    const s = file.name
+                    // const storeAs = 'abcdf'
+                    client.put(s, f).then(function (r1) {
+                        debugger
+                        if (r1.res.status === 200) {
+                            debugger
+                            console.log('上传了')
+                            url = r1.url;
+                            _this.newRole.docs.push(url);
+                            _this.n_docs.push({
+                                name: file.name,
+                                uid: file.uid,
+                                url: url
+                            })
+                            console.log(_this.n_docs)
+
+                        }
+                    }).catch(function (err) {
+                        debugger
+                        console.log(err)
+                    });
+               /* }*/
             },
+            //点击下一步进入品牌信息
             checkSecond(){
                 if(this.newRole.demandName == ''){
                     this.$message.error("请输入需求名称")
@@ -485,36 +573,57 @@
             },
             //编辑
             editor(){
+                 debugger
                     let rowId=this.$route.query.rowId
                     return request({
-                   methods:'get',
-                   url:'/mai-meng-cloud/demand/'+rowId,
-                   headers: {
-                       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                   },
-               }).then((res)=>{
-                   let demand=res.data.data.demand
-                   //需求名称
-                   this.newRole.demandName=demand.name;
-                   //开始时间
-                   this.newRole.beginTime=demand.beginTime
+                        methods:'get',
+                        url:'/mai-meng-cloud/demand/'+rowId,
+                        headers: {
+                           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                }).then((res)=>{
+                     this.brandEntityId=res.data.data.brandEntity.id
+                     this.demandId=res.data.data.demand.id
+                     this.threadTemplateId=res.data.data.threadTemplate.id
+
+                    let demand=res.data.data.demand
+                    let docsArr=demand.docs;
+                    //console.log(docsArr)
+                        let newDocs=[]
+                     for(let i=0;i<docsArr.length;i++){
+                         this.newRole.docs.push(docsArr[i])
+                         let docs=docsArr[i].split('/')
+
+                         this.fileList.push({
+                             name:docs[3],
+                             url:docsArr[i]
+                         })
+                     }
+                     this.n_docs=this.fileList;
+                    //需求名称
+                    this.newRole.demandName=demand.name;
+                    //开始时间
+                    this.newRole.beginTime=demand.beginTime
                     //结束时间
                     this.newRole.endTime=demand.endTime
                         //判断运营模式
+                        this.newRole.operationMode=demand.operationMode
                         if(demand.operationMode==1){
-                            this.newRole.operationMode='线上'
+                            this.operationValue='线上'
                         }else{
-                            this.newRole.operationMode='线下'
+                            this.operationValue='线下'
                         }
+
                         //判断业务分类
+                        this.newRole.businessClassification=demand.businessClassification
                         if(demand.businessClassification==1){
-                            this.newRole.businessClassification='幼儿早教'
-                        }else if(demand.businessClassification==2){
-                            this.newRole.businessClassification='少儿英语'
+                            this.businessValue='幼儿早教'
+                        }else if (demand.businessClassification==2){
+                            this.businessValue='少儿英语'
                         }else if(demand.businessClassification==3){
-                            this.newRole.businessClassification='成人英语'
+                            this.businessValue='成人英语'
                         }else{
-                            this.newRole.businessClassification='少儿编程'
+                            this.businessValue='少儿编程'
                         }
                         //分割年龄范围
                         let ageRange=demand.ageRange.split(',')
@@ -523,21 +632,25 @@
                             this.newRole.endAge=ageRange[1]
                         }
                         //判断课价水平
+                        this.newRole.priceLevel=demand.priceLevel
                         if(demand.priceLevel==1){
-                            this.newRole.priceLevel='低'
-                        }else if(demand.priceLevel==2){
-                            this.newRole.priceLevel='普通'
+                            this.priceLevelValue='低'
+                        }else if (demand.priceLevel==2){
+                            this.priceLevelValue='普通'
                         }else{
-                            this.newRole.priceLevel='高'
+                            this.priceLevelValue='高'
                         }
+
                         //判断目标区域
+                        this.newRole.area=demand.area
                         if(demand.area==1){
-                            this.newRole.area='一线城市'
-                        }else if(demand.area==2){
-                            this.newRole.area='二线城市'
+                            this.areaValue='一线城市'
+                        }else if (demand.area==2){
+                            this.areaValue='二线城市'
                         }else{
-                            this.newRole.area='三线城市'
+                            this.areaValue='三线城市'
                         }
+
                         let brandEntity=res.data.data.brandEntity
                         //品牌名称
                         this.newRole.brand=brandEntity.brand
@@ -545,22 +658,20 @@
                         this.newRole.contactPerson=brandEntity.contactPerson
                        //联系电话
                         this.newRole.mobile=brandEntity.mobile
-
                         let threadTemplate=res.data.data.threadTemplate
                         //自定义标签
                         this.dynamicTags=threadTemplate.userTags
-
-
-
                }).catch((error)=>{
                })
             },
+            //点击上一步进入业务需求
             checkFirst(){
                 let arr = document.getElementsByClassName("tab_item");
                 this.first_step=true
                 this.second_step=false
                 arr[1].classList.remove("over")
             },
+            //点击下一步进入线索模板
             checkThird(){
                 if(this.newRole.brand == ''){
                     this.$message.error("请选择品牌名称")
@@ -575,6 +686,7 @@
                     arr[2].classList.add("over")
                 }
             },
+            //点击下一步进入确认信息
             checkFour(){
                 if(this.dynamicTags == ''){
                     this.$message.error("请输入自定义标签")
@@ -585,6 +697,7 @@
                     arr[3].classList.add("over")
                 }
             },
+            //点击上一步进入品牌信息
             checkUpper(){
                   let arr = document.getElementsByClassName("tab_item");
                     this.second_step=true,
@@ -592,12 +705,14 @@
                     arr[2].classList.remove("over")
 
             },
+            //点击上一步进入线索模板
             checkStory(){
                   let arr = document.getElementsByClassName("tab_item");
                    this.third_step=true,
                    this.four_step=false
                   arr[3].classList.remove("over")
             },
+            //更改运营模式
             changeOperation(event){
                 this.operationMode = event; //获取运营模式的ID，即option对应的ID值
                 if(this.operationMode==1){
@@ -606,6 +721,7 @@
                     this.operationValue='线下'
                 }
             },
+            //更改业务分类
             changeClass(event){
                 this.businessClassification = event;
                 if(this.businessClassification==1){
@@ -618,6 +734,7 @@
                     this.businessValue='少儿编程'
                 }
             },
+            //更改课价水平
             changeAcademic(event){
                 this.priceLevel = event;
                 if(this.priceLevel==1){
@@ -628,19 +745,24 @@
                     this.priceLevelValue='高'
                 }
             },
+            //更改目标区域
             changeObject(event){
                 this.area = event;
                 if(this.area==1){
-                    this.areaValue='一线城市'
+                    this. areaValue='一线城市'
                 }else if (this.area==2){
-                    this.areaValue='二线城市'
+                    this. areaValue='二线城市'
                 }else{
-                    this.areaValue='三线城市'
+                    this. areaValue='三线城市'
                 }
             },
             //更新需求确定
             confirm(){
-                let rowId=this.$route.query.rowId
+                this.newRole.docs=[]
+                this.n_docs.forEach((item,index)=>{
+                    this.newRole.docs.push(item.url)
+                })
+                debugger
                 this.$refs.newRole.validate(valid => {
                     if (valid) {
                         let ageRange=this.newRole.beginAge+","+this.newRole.endAge
@@ -656,15 +778,15 @@
                             url:'/mai-meng-cloud/demand',
                             data:{
 
-                                "threadTemplate":{ 'id':rowId,"userTags":this.dynamicTags,},
+                                "threadTemplate":{ 'id':this.threadTemplateId,"userTags":this.dynamicTags,},
                                 "brand":{
-                                    'id':rowId,
+                                    'id':this.brandEntityId,
                                     "brand":this.newRole.brand,
                                     'contactPerson':this.newRole.contactPerson,
                                     'mobile':this.newRole.mobile,
                                     },
                                 "demand":{
-                                    'id':rowId,
+                                    'id':this.demandId,
                                     'name':this.newRole.demandName,
                                     'beginTime':this.newRole.beginTime,
                                     'endTime':this.newRole.endTime,
@@ -672,10 +794,13 @@
                                     'businessClassification':this.businessClassification,
                                     'ageRange':ageRange,
                                     'priceLevel':this.priceLevel,
-                                    'area':this.area
+                                    'area':this.area,
+                                    'docs':this.newRole.docs
                                 },
                             }
                         }).then((res)=>{
+                            debugger
+                            console.log(res)
                             this.$message({
                                 type: 'success',
                                 message: '更新成功!'
@@ -690,15 +815,17 @@
                 });
 
             },
+            //点击删除自定义标签
             handleClose(tag) {
                 this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
             },
-            showInput() {
+            /* showInput() {
                 this.inputVisible = true;
                 this.$nextTick(_ => {
                     this.$refs.saveTagInput.$refs.input.focus();
                 });
-            },
+            },*/
+            //保存自定义标签
             handleInputConfirm() {
                 let inputValue = this.inputValue;
                 if (inputValue) {
@@ -707,69 +834,32 @@
                 this.inputValue = '';
             },
             //字典管理
-              getDictionary(){
+            getDictionary(){
                 const res=this.$store.dispatch("dictionary")
                 res.then(()=>{
-                     let dictData=this.$store.state.user.dict
-                    //根据相同的groupId组成新的数组
-                    let map={},
-                        dest=[];
-                    for(var i=0;i<dictData.length;i++){
-                        let ai=dictData[i];
-                        if(!map[ai.groupId]){
-                            dest.push({
-                                groupId:ai.groupId,
-                                dDescribe:ai.dDescribe,
-                                data:[ai]
-                            });
-                            map[ai.groupId]=ai
-                        }else{
-                            for (var j=0;j<dest.length;j++) {
-                                let dj=dest[j];
-                                if(dj.groupId==ai.groupId){
-                                    dj.data.push(ai)
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    let operationDatas=dest[0].data  //运营模式数据
-                    let operationData=JSON.stringify(operationDatas)
-                    sessionStorage.setItem('operationData',operationData)
+                    //取出运营模式数据  转为JSON数组
                     let oprations=sessionStorage.getItem('operationData')
                     this.operationData=JSON.parse(oprations)
 
-                    let need=sessionStorage.getItem('operationData')
-                    let businessDatas=dest[1].data  //业务分类数据
-                    let businessData=JSON.stringify(businessDatas)
-                    sessionStorage.setItem('businessData',businessData)
+                    //console.log(this.operationData);
+                    //取出业务分类数据  转为JSON数组
                     let business=sessionStorage.getItem('businessData')
                     this.businessData=JSON.parse(business)
 
-                    let priceleveDatas=dest[2].data  //课价水平数据
-                    let priceleveData=JSON.stringify(priceleveDatas)
-                    sessionStorage.setItem('priceleveData',priceleveData)
+                    //取出课价水平数据  转为JSON数组
                     let priceleve=sessionStorage.getItem('priceleveData')
                     this.priceleveData=JSON.parse(priceleve)
 
-                    let regionDatas=dest[3].data  //目标区域数据
-                    let regionData=JSON.stringify(regionDatas)
-                    sessionStorage.setItem('regionData',regionData)
+                    //取出目标区域数据  转为JSON数组
                     let region=sessionStorage.getItem('regionData')
                     this.regionData=JSON.parse(region)
 
-                    let cluesDatas=dest[5].data //线索模板数据
-                    let cluesData=JSON.stringify(cluesDatas)
-                    sessionStorage.setItem('cluesData',cluesData)
+                    //取出线索模板数据  转为JSON数组
                     let clues=sessionStorage.getItem('cluesData')
                     this.cluesData=JSON.parse(clues)
-
                 }).catch(()=>{
 
                 })
-            },
-              operation(){
-
             },
             //查询品牌
             getBrand(){

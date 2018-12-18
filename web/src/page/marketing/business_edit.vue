@@ -113,21 +113,20 @@
                         <div class="info-item">
                             <span class="item-left font-black" style="vertical-align: top">产品材料</span>
                             <span class="item-right">
-
-                                        <el-upload
-                                            class="upload-demo"
-                                            ref="upload"
-                                            action="https://jsonplaceholder.typicode.com/posts/"
-                                            :on-preview="handlePreview"
-                                            :on-remove="handleRemove"
-                                            :file-list="fileList"
-                                            :auto-upload="false">
-                                       <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
-                                             <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
-                                        </el-upload>
-                                    </span>
+                                <el-upload
+                                    class="upload-demo"
+                                    ref="upload"
+                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :on-preview="handlePreview"
+                                    :on-remove="handleRemove"
+                                    :file-list="fileList"
+                                    :auto-upload="false"
+                                    :on-change="handleChange">
+                                    <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
+                                     <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
+                                </el-upload>
+                            </span>
                         </div>
-
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -280,8 +279,10 @@
                         <div class="info-item">
                             <span class="item-left">产品介绍</span>
                             <span class="item-right">
-                                        {{this.fileList}}
-                                    </span>
+                                <ul>
+                                    <li v-for="item in fileList">{{item.name}}</li>
+                                </ul>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -337,10 +338,10 @@
                     <div class="info-item">
                         <span class="item-left" style="vertical-align: top;">自定义标签</span>
                         <span class="item-right">
-                                    <ul class="tag-list-small">
-                                        <li  v-for="tag in dynamicTags" :key="tag">{{tag}}</li>
-                                    </ul>
-                                </span>
+                            <ul class="tag-list-small">
+                                <li  v-for="tag in dynamicTags" :key="tag">{{tag}}</li>
+                            </ul>
+                        </span>
                     </div>
                 </div>
                 <div class="edit-btn-list no-line">
@@ -356,17 +357,15 @@
     </div>
 </template>
 <script>
-
-    import {dictionary} from '@/api/login'
     import {mapActions, mapState,mapMutations} from 'vuex'
-    import axios from 'axios'
     import request from '@/untils/request'
+    import OSS from 'ali-oss' //引入OSS
     export default{
         inject:['reload'],
         data(){
             return{
                 params:'',
-                decs:'',
+                decs:'',//标签描述
               newRole:{
                   demandName:'',//需求名称
                   supplementary:'',//补充说明
@@ -385,25 +384,27 @@
                   // systemTags:'',//	系统标签
                   userTags:[],//自定义标签
                   brand:'',//品牌名称
+                  docs:[],//说明文档数组
               },
+                n_docs:[],//带uid数组
                 operationValue:'',//运营模式Value值
                 businessValue:'', //业务分类Value值
                 priceLevelValue:'',//课价分类Value值
                 areaValue:'',//目标区域Value值
-                fileList:[],
-                first_step:true,
-                second_step:false,
-                third_step:false,
-                four_step:false,
-                dynamicTags: [],
+                fileList:[],//产品介绍数组
+                first_step:true,//业务需求表单
+                second_step:false,//品牌信息表单
+                third_step:false,//线索模板表单
+                four_step:false,//确认信息表单
+                dynamicTags: [],//自定义标签数组
                 inputVisible: true,
-                inputValue: '',
+                inputValue: '',//自定义标签
                 operationData:[],//运营模式数据
                 businessData:[],//业务分类数据
                 priceleveData:[],//课价水平数据
                 regionData:[],//目标区域数据
                 cluesData:[],//线索模板数据
-                brand:[],
+                brand:[],//品牌数据数组
                 pickerOptions1: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
@@ -413,49 +414,130 @@
                         onClick(picker) {
                             picker.$emit('pick', new Date());
                         }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
                     }]
-                },
+                },//日期组件
 
             }
         },
         created(){
-            this.getDictionary()
+            this.getDictionary() //初始化字典管理数据
             this.getBrand()
         },
         methods:{
+            //这个sTime是在data中声明的，也就是v-model绑定的值
             getSbeginTime(val){
-                this.newRole.beginTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
+                this.newRole.beginTime=val;
             },
+            //这个sTime是在data中声明的，也就是v-model绑定的值
             getSendTime(val){
-                this.newRole.endTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
+                this.newRole.endTime=val;
             },
-            ...mapActions(['dictionary']),
-            submitUpload() {
+            /*  submitUpload() {
                 this.$refs.upload.submit();
-            },
+            },*/
+            //点击删除文件的钩子
             handleRemove(file, fileList) {
+                debugger
+                let _this=this;
+                // let url="";
+                this.fileList=fileList
+                fileList.forEach((item,index)=>{
+                    return index
+                })
+                let  client = new OSS({
+                    accessKeyId:'LTAIUEAyF5F1rtjD',
+                    accessKeySecret:'6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                    region: 'oss-cn-zhangjiakou', // oss地区
+                    bucket: 'cloud-mm'
+                })
+                const f =file.raw
+                const s=file.name
+                client.delete(s,f).then(function (r1) {
+                    debugger
+                    if (r1.res.status === 204) {
+                        debugger
+                        console.log('删除了')
+                        let docs=_this.newRole.docs
+                        _this.n_docs.forEach((item,index)=>{
+                            if(item.uid == file.uid){
+                                _this.n_docs.splice(index,1)
+                            }
+                        })
+
+                    }
+
+                }).catch(function (err) {
+                    debugger
+                    console.log(err)
+                });
+
             },
-            handlePreview(file) {
+            //点击文件列表中已上传的文件时的钩子
+            handlePreview(file,fileList) {
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
+
+            //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+            handleChange(file,fileList) {
+                let _this=this;
+           /*   let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
+                const extension = testmsg === 'doc'
+                const extension2 = testmsg === 'pdf'
+                const extension3 = testmsg === 'ppt'
+                const isLt100M = file.size / 1024 / 1024 < 100;*/
+              /*  if(!extension &&  !extension2 && !extension3) {
+                    debugger
+                    this.$message({
+                        message: '上传文件只能是 doc、pdf、ppt格式!',
+                        type: 'warning'
+                    });
+                    _this.fileList=_this.n_docs
+                    this.reload()
+                    console.log(_this.fileList)
+
+                }else if(!isLt100M){
+                    debugger
+                    this.$message.warning('上传头像图片大小不能超过 100MB!');
+                    _this.fileList=_this.n_docs
+                    this.reload()
+                }else{*/
+                    debugger
+                    let url="";
+                    this.fileList=fileList
+                    // this.fileList = fileList.slice(-3);
+                    let  client = new OSS({
+                        accessKeyId:'LTAIUEAyF5F1rtjD',
+                        accessKeySecret:'6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                        region: 'oss-cn-zhangjiakou', // oss地区
+                        bucket: 'cloud-mm'
+                    })
+                    const f =file.raw
+                    const s=file.name
+                    client.put(s,f).then(function (r1) {
+                        if (r1.res.status === 200) {
+                            let b=[]
+                            console.log('上传了')
+                            url=r1.url;
+                            _this.newRole.docs.push(url);
+                            _this.n_docs.push({
+                                name:file.name,
+                                uid:file.uid,
+                                url:url
+                            })
+                        }
+                    }).catch(function (err) {
+                    });
+              /*  }*/
+
+
+
+            },
+            //点击下一步进入品牌信息
             checkSecond(){
+                //表单非空校验
                 if(this.newRole.demandName == ''){
                     this.$message.error("请输入需求名称")
                 }else if(this.newRole.beginTime == '' || this.newRole.endTime == ''){
@@ -479,13 +561,9 @@
                     arr[1].classList.add("over")
                 }
             },
-            checkFirst(){
-                let arr = document.getElementsByClassName("tab_item");
-                this.first_step=true
-                this.second_step=false
-                arr[1].classList.remove("over")
-            },
+            //点击下一步进入线索模板
             checkThird(){
+                //表单非空校验
                 if(this.newRole.brand == ''){
                     this.$message.error("请选择品牌名称")
                 }else if(this.newRole.contactPerson == ''){
@@ -499,7 +577,9 @@
                     arr[2].classList.add("over")
                 }
             },
+            //点击下一步进入确认信息
             checkFour(){
+                //表单非空校验
                 if(this.dynamicTags == '') {
                     this.$message.error("请输入自定义标签")
                 }else {
@@ -509,6 +589,14 @@
                     arr[3].classList.add("over")
                 }
             },
+            //点击上一步进入业务需求
+            checkFirst(){
+                let arr = document.getElementsByClassName("tab_item");
+                this.first_step=true
+                this.second_step=false
+                arr[1].classList.remove("over")
+            },
+            //点击上一步进入品牌信息
             checkUpper(){
                   let arr = document.getElementsByClassName("tab_item");
                     this.second_step=true,
@@ -516,12 +604,14 @@
                     arr[2].classList.remove("over")
 
             },
+            //点击上一步进入线索模板
             checkStory(){
                   let arr = document.getElementsByClassName("tab_item");
                    this.third_step=true,
                    this.four_step=false
                   arr[3].classList.remove("over")
             },
+            //更改运营模式
             changeOperation(event){
                 this.operationMode = event; //获取运营模式的ID，即option对应的ID值
                 if(this.operationMode==1){
@@ -530,6 +620,7 @@
                     this.operationValue='线下'
                 }
             },
+            //更改业务分类
             changeClass(event){
                 this.businessClassification = event;
                 if(this.businessClassification==1){
@@ -539,9 +630,10 @@
                 }else if(this.businessClassification==3){
                     this.businessValue='成人英语'
                 }else{
-                    this.operationValue='少儿编程'
+                    this.businessValue='少儿编程'
                 }
             },
+            //更改课价水平
             changeAcademic(event){
                 this.priceLevel = event;
                 if(this.priceLevel==1){
@@ -552,6 +644,7 @@
                     this.priceLevelValue='高'
                 }
             },
+            //更改目标区域
             changeObject(event){
                 this.area = event;
                 if(this.area==1){
@@ -562,15 +655,18 @@
                     this. areaValue='三线城市'
                 }
             },
-
             //新建角色确定
             confirm(){
+                this.newRole.docs=[]
+                this.n_docs.forEach((item,index)=>{
+                   this.newRole.docs.push(item.url)
+                })
+                debugger
                 this.$refs.newRole.validate(valid => {
                     if (valid) {
                         let beginAge=this.newRole.beginAge
                         let endAge=this.newRole.endAge
                         let ageRange=this.newRole.beginAge+","+this.newRole.endAge
-
                         return request({
                            method:'post',
                            headers: {
@@ -585,7 +681,9 @@
                                "threadTemplate":{"userTags":this.dynamicTags},
                                "brand":{"brand":this.newRole.brand,
                                    'contactPerson':this.newRole.contactPerson,
-                                   'mobile':this.newRole.mobile,},
+                                   'mobile':this.newRole.mobile,
+                                   'remark':this.newRole.remark
+                               },
                                "demand":{
                                    'name':this.newRole.demandName,
                                    'beginTime':this.newRole.beginTime,
@@ -594,10 +692,13 @@
                                    'businessClassification':this.businessClassification,
                                    'ageRange':ageRange,
                                    'priceLevel':this.priceLevel,
-                                   'area':this.area
+                                   'area':this.area,
+                                   'docs':this.newRole.docs,
+                                   'remark':this.newRole.supplementary
                                },
                            }
                        }).then((res)=>{
+                           debugger
                             this.$message({
                                 type: 'success',
                                 message: '创建成功!'
@@ -611,15 +712,17 @@
                     }
                 });
             },
+            //点击删除自定义标签
             handleClose(tag) {
                 this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
             },
-            showInput() {
+            /*   showInput() {
                 this.inputVisible = true;
                 this.$nextTick(_ => {
                     this.$refs.saveTagInput.$refs.input.focus();
                 });
-            },
+            },*/
+            //保存自定义标签
             handleInputConfirm() {
                 let inputValue = this.inputValue;
                 if (inputValue) {
@@ -628,67 +731,31 @@
                 this.inputValue = '';
             },
             //字典管理
-              getDictionary(){
+            getDictionary(){
                 const res=this.$store.dispatch("dictionary")
                 res.then(()=>{
-                     let dictData=this.$store.state.user.dict
-                    //根据相同的groupId组成新的数组
-                    let map={},
-                        dest=[];
-                    for(var i=0;i<dictData.length;i++){
-                        let ai=dictData[i];
-                        if(!map[ai.groupId]){
-                            dest.push({
-                                groupId:ai.groupId,
-                                dDescribe:ai.dDescribe,
-                                data:[ai]
-                            });
-                            map[ai.groupId]=ai
-                        }else{
-                            for (var j=0;j<dest.length;j++) {
-                                let dj=dest[j];
-                                if(dj.groupId==ai.groupId){
-                                    dj.data.push(ai)
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    let operationDatas=dest[0].data  //运营模式数据
-                    let operationData=JSON.stringify(operationDatas)
-                    sessionStorage.setItem('operationData',operationData)
+                    //取出运营模式数据  转为JSON数组
                     let oprations=sessionStorage.getItem('operationData')
                     this.operationData=JSON.parse(oprations)
 
-                    let need=sessionStorage.getItem('operationData')
-                    let businessDatas=dest[1].data  //业务分类数据
-                    let businessData=JSON.stringify(businessDatas)
-                    sessionStorage.setItem('businessData',businessData)
+                    //取出业务分类数据  转为JSON数组
                     let business=sessionStorage.getItem('businessData')
                     this.businessData=JSON.parse(business)
 
-                    let priceleveDatas=dest[2].data  //课价水平数据
-                    let priceleveData=JSON.stringify(priceleveDatas)
-                    sessionStorage.setItem('priceleveData',priceleveData)
+                    //取出课价水平数据  转为JSON数组
                     let priceleve=sessionStorage.getItem('priceleveData')
                     this.priceleveData=JSON.parse(priceleve)
 
-                    let regionDatas=dest[3].data  //目标区域数据
-                    let regionData=JSON.stringify(regionDatas)
-                    sessionStorage.setItem('regionData',regionData)
+                    //取出目标区域数据  转为JSON数组
                     let region=sessionStorage.getItem('regionData')
                     this.regionData=JSON.parse(region)
 
-                    let cluesDatas=dest[5].data //线索模板数据
-                    let cluesData=JSON.stringify(cluesDatas)
-                    sessionStorage.setItem('cluesData',cluesData)
+                    //取出线索模板数据  转为JSON数组
                     let clues=sessionStorage.getItem('cluesData')
                     this.cluesData=JSON.parse(clues)
 
                 }).catch(()=>{
                 })
-            },
-              operation(){
             },
             //查询品牌
             getBrand(){
@@ -700,7 +767,6 @@
                     url:'mai-meng-cloud/company/brand',
                 }).then((res)=>{
                     let brand=[]
-                    // brand.push({brandName:res.da})
                         let bra=res.data.data
                         for (var i=0;i<bra.length;i++){
                             brand.push({

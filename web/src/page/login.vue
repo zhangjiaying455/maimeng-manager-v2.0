@@ -41,10 +41,10 @@
 	    data(){
 			return {
 				loginForm: {
-					username: '',
-					password: '',
+					username: '',//用户名
+					password: '',//密码
 				},
-                checked:false,
+                //非空校验
 				rules1: {
 					username: [
 			            { required: true, message: '请输入用户名', trigger: 'blur' ,style: 'top:80%'},
@@ -53,20 +53,15 @@
 						{ required: true, message: '请输入密码', trigger: 'blur' }
 					],
 				},
-				showLogin: false,
 			}
 		},
-		mounted(){
-		},
 		computed: {
-			// ...mapState(['adminInfo']),
 		},
 		methods: {
             //点击登录
             handleLogin(loginForm) {
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
-                        this.loading = true;
                         const res=this.$store.dispatch("Login", this.loginForm).then(()=>{
                             this.$message({
                                 type:'success',
@@ -82,11 +77,13 @@
                     }
                 });
             },
+            //跳转到立即注册页
             register(){
                 this.$router.push({
                     path:'/register'
                 })
             },
+            //跳转到忘记密码页
             password(){
                 this.$router.push({
                     path:'/password'

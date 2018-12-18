@@ -6,20 +6,18 @@
        <div class="main-search">
            <div class="search-item">
                <span class="item-left">需求名称</span>
-               <span class="item-right">
-                           <el-input type="text" v-model="inputName"></el-input>
-                            </span>
+               <span class="item-right"><el-input type="text" v-model="inputName"></el-input></span>
            </div>
            <div class="search-item">
                <span class="item-left">需求状态</span>
                <span class="item-right">
-                                <el-select  v-model="demand.newDemandState" @change="changeDemandState($event)">
-                                    <el-option value="" label="全部">全部</el-option>
-                                    <el-option :label="item.dValue" :value="item.dKey"  v-for="item in needstateData" :key="item.dKey">{{item.dValue}}</el-option>
-                                </el-select>
-                            </span>
+                 <el-select  v-model="demand.newDemandState" @change="changeDemandState($event)">
+                    <el-option value="" label="全部">全部</el-option>
+                    <el-option :label="item.dValue" :value="item.dKey"  v-for="item in needstateData" :key="item.dKey">{{item.dValue}}</el-option>
+                 </el-select>
+              </span>
            </div>
-           <el-button type="button" class="btn-search" @click="search">查询</el-button>
+           <button type="button" class="btn-search" @click="search">查询</button>
        </div>
        <div class="main-table">
            <div class="table-msg">
@@ -94,64 +92,30 @@
 <script>
     import request from '@/untils/request'
     import moment from 'moment'
-    import index from "../../router";
     import {mapGetters} from 'vuex'
     export default {
-        inject:['reload'],//注入reload方法
+        inject:['reload'],//注入reload方法 this.reload()刷新页面
         data() {
             return {
-                pag_show:true,
-                needstateData:[],
-                tableName:[],
-                demandName:'',
-                pickerOptions1: {
-                    disabledDate(time) {
-                        return time.getTime() > Date.now();
-                    },
-                    shortcuts: [{
-                        text: '今天',
-                        onClick(picker) {
-                            picker.$emit('pick', new Date());
-                        }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
-                    }]
-                },
+                pag_show:true,//分页显示
+                needstateData:[],//需求状态数组
                 value:"",
-                value1: '',
-                value2: '',
-                tableData:[],
+                tableData:[],//表格数据数组
                 pageSize:10,//每页十条
-                total:0,
-                currentPage: 1,
-                inputName:'',
+                total:0,//总数
+                currentPage: 1,//当前页
+                inputName:'',//需求名称
                 demand:{
-                    newDemandState:'',
-                }
+                    newDemandState:'',//绑定需求状态
+                },
 
             }
         },
         created(){
-          this.requirements()
-          this.getDemandlist()
-        },
-        mounted(){
-
+          this.requirements()//初始化字典查询 并根据groupId做分组处理 进行存储
+          this.getDemandlist()//初始化表格数据
         },
         methods: {
-
             //时间格式化
             dateFormat:function(row, column) {
                 var date = row[column.property];
@@ -160,18 +124,22 @@
                 }
                 return moment(date).format("YYYY-MM-DD");
             },
-            handleSizeChange(pageSize) {//每页条数切换
+            //每页条数切换
+            handleSizeChange(pageSize) {
                 this.pageSize=pageSize
             },
-            handleCurrentChange(currentPage) {//页码切换
+            //页码切换
+            handleCurrentChange(currentPage) {
                this.currentPage=currentPage
                 this.getDemandlist()
             },
+            //修改表格样式
             tableHeaderColor({row, column, rowIndex, columnIndex}) {
                 if (rowIndex === 0) {
                     return 'background-color: #ffff;'
                 }
             },
+            //跳转到新建需求
             newDemand(){
                 this.$router.push({
                     path:'/business_edit'
@@ -182,57 +150,34 @@
             },
             //获取业务需求数据
             requirements() {
+                debugger
                 const res=this.$store.dispatch("dictionary")
                 res.then(()=>{
-                    let dictData=this.$store.state.user.dict
-                    //根据相同的groupId组成新的数组
-                    let map={},
-                        dest=[];
-                    for(var i=0;i<dictData.length;i++){
-                        let ai=dictData[i];
-                        if(!map[ai.groupId]){
-                            dest.push({
-                                groupId:ai.groupId,
-                                dDescribe:ai.dDescribe,
-                                data:[ai]
-                            });
-                            map[ai.groupId]=ai
-                        }else{
-                            for (var j=0;j<dest.length;j++) {
-                                let dj=dest[j];
-                                if(dj.groupId==ai.groupId){
-                                    dj.data.push(ai)
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    let needstateDatas=dest[4].data  //需求状态数据
-                    //转换Json数组为Json字符串
-                    let needstateData1=JSON.stringify(needstateDatas)
-                    //存储需求状态数组  Json字符串
-                    sessionStorage.setItem('needstatedData',needstateData1)
                     //取出存在sessionStorge里面的Json字符串，转换为Json数组
                     let needStates=sessionStorage.getItem('needstatedData')
                     let needState=JSON.parse(needStates)
                     this.needstateData=needState
                 }).catch(()=>{
-
                 })
             },
             //获取列表
             getDemandlist(){
+              let params={
+                    name:this.inputName,
+                        state:this.newDemandState,
+                        page:this.currentPage-1,
+                        size:this.pageSize
+                }
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/demand',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
-                    params:{
-                        page:this.currentPage-1,
-                        size:this.pageSize
-                    }
+                    params:params
                 }).then((res)=>{
+                    debugger
+                    console.log(res.data)
                     this.tableData=res.data.data.list;
                     for(var i=0;i<this.tableData.length;i++){
                         if(this.tableData[i].state==1){
@@ -242,46 +187,6 @@
                         }else{
                             this.tableData[i].state="审核"
                         }
-
-                    }
-
-                    let data=res.data.data.list
-                     let timeUpate=new Date()
-                    this.total=res.data.data.totalCount
-                    if(this.total == 0){
-                        this.pag_show=false;
-                    }else{
-                        this.pag_show=true;
-                    }
-
-                }).catch((error)=>{
-
-                })
-            },
-            //查询
-            search(){
-                return request({
-                    methods:'get',
-                    url:'/mai-meng-cloud/demand',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                    },params:{
-                        name:this.inputName,
-                        state:this.newDemandState,
-                        page:this.currentPage-1,
-                        size:this.pageSize
-                    }
-                }).then((res)=>{
-                    this.tableData=res.data.data.list;
-                    for(var i=0;i<this.tableData.length;i++){
-                        if(this.tableData[i].state==1){
-                            this.tableData[i].state="生产中";
-                        }else if(this.tableData[i].state==2){
-                            this.tableData[i].state="建模"
-                        }else{
-                            this.tableData[i].state="审核"
-                        }
-
                     }
                     let data=res.data.data.list
                     let timeUpate=new Date()
@@ -291,10 +196,14 @@
                     }else{
                         this.pag_show=true;
                     }
-
                 }).catch((error)=>{
+                    debugger
+                    console.log(error)
                 })
-
+            },
+            //查询
+            search(){
+                this.getDemandlist()
             },
             //编辑
             editor(row){
@@ -306,7 +215,6 @@
                     }
                 })
                 this.reload();
-
             },
             //删除
             del(row){
@@ -322,7 +230,6 @@
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                         },
-
                     }).then((res)=>{
                         this.$message({
                             type: 'success',
@@ -337,8 +244,8 @@
                     });
                 })
             },
+            //携带id跳转到线索
             clue(row){
-                console.log(row)
                 this.rowId=row.id
                 this.rowName=row.name
                 this.$router.push({
@@ -351,11 +258,11 @@
                 })
                 this.reload()
             },
-            change_size(){
-                this.pageSize=document.getElementById("pager-size").value;
+            //切换每页显示多少条数据
+            change_size(event){
+                this.pageSize=event.target.value;
                 this.search();
             }
-
         },
         computed:{
             ...mapGetters([
@@ -363,13 +270,6 @@
             ]),
         },
         watch:{
-            // 监听updateTableList，如果updateTableList值有变化，则执行刷新功能
-            updateTableList: function (newValue) {
-                if(newValue) {
-                    this.getDemandlist()
-                    this.$store.commit('UPLOAD_TABLE_LIST',true)
-                }
-            }
         }
 
 
@@ -399,10 +299,11 @@
         border-radius: 3px;
         height: 28px;
     }
-    .business-list .btn-small{
+    /*.business-list .btn-small{
         position: absolute;
-        right: 30px;
-    }
+        right: 45px;
+
+    }*/
     .business-list .el-table th>.cell{
         text-align: center;
     }

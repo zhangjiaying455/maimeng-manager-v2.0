@@ -35,14 +35,14 @@
                         <span class="item-left font-black"><span>*</span>所属行业</span>
                         <span class="item-right">
                             <select class="txt-common" @change="select_vocation">
-                                <template v-if="company.vocation==''">
+                                <template><!--v-if="company.vocation==''"-->
                                     <option value="">请选择行业</option>
-                                    <option v-bind:value="item.id" v-for="item in vocation">{{item.name}}</option>
+                                    <option v-bind:value="item.id" v-for="item in vocation">{{item.dValue}}</option>
                                 </template>
-                                <template v-else v-for="item in vocation">
-                                    <option v-bind:value="item.id" v-if="item.id==company.vocation" selected>{{item.name}}</option>
-                                    <option v-bind:value="item.id" v-else>{{item.name}}</option>
-                                </template>
+                               <!-- <template v-else v-for="item in vocation">
+                                    <option v-bind:value="item.id" v-if="item.id==company.vocation" selected>{{item.dDescribe}}</option>
+                                    <option v-bind:value="item.id" v-else>{{item.dDescribe}}</option>
+                                </template>-->
                             </select>
                         </span>
                     </div>
@@ -65,7 +65,12 @@
                             <el-upload
                                 class="upload-demo"
                                 ref="upload"
-                                action="https://jsonplaceholder.typicode.com/posts/">
+                                action="https://jsonplaceholder.typicode.com/posts/"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :file-list="fileList"
+                                :auto-upload="false"
+                                :on-change="handleChange">
                                 <el-button slot="trigger" size="medium" type="warning" style="width: 200px;">上传附件材料</el-button>
                                       <p class="remark-info">* 营业执照、税务登记证、组织机构代码证三证合一</p>
                                       <p class="remark-info">* 必须为清晰 、完整的彩色原件扫描件或数码照</p>
@@ -83,10 +88,12 @@
 </template>
 
 <script>
+    import {mapActions, mapState,mapMutations} from 'vuex'
     import {dictionary} from '@/api/login'
     import request from '@/untils/request'
-
+    import OSS from 'ali-oss'
     export default {
+        inject:['reload'],
         data(){
             return{
                 company:{
@@ -98,7 +105,9 @@
                     brands:[],//品牌名称
                     docs:[]//产品介绍-上传文件
                 },
-                vocation:[]//行业信息集合
+                n_docs:[],
+                vocation:[],//行业信息集合
+                fileList:[],
             }
         },
         created(){
@@ -118,7 +127,7 @@
                         this.company.email=res.data.data.email;
                         this.company.vocation=res.data.data.vocation==null?"":res.data.data.vocation;
                         this.company.brands=res.data.data.brands;
-                        this.company.docs=res.data.data.docs;
+                        // this.company.docs=res.data.data.docs;
                     }else{
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
@@ -127,30 +136,14 @@
                 }));
             },
             init_vocation(){
-                return request({
-                    method:'get',
-                    url:'mai-meng-cloud/dict',
-                }).then((res)=>{
-                    if(res.data.code=="200"){
-                        for(let i=0;i<res.data.data.length;i++){
-                            if(res.data.data[i].groupId=="8"){
-                                let obj={
-                                    "id":res.data.data[i].dKey,
-                                    "name":res.data.data[i].dValue
-                                }
-                                this.vocation.push(obj);
-                                let vocations=JSON.stringify(this.vocation)
-                                sessionStorage.setItem('vocation',vocations)
-                                let vocationB=sessionStorage.getItem('vocation')
-                                this.vocation=JSON.parse(vocationB)
-                            }
-                        }
-                    }else{
-                        this.$message.error('数据初始化失败，请刷新重试');
-                    }
-                }).catch((error=>{
-                    this.$message.error('数据初始化失败，请刷新重试');
-                }));
+                const res=this.$store.dispatch("dictionary")
+                res.then(()=>{
+                    debugger
+                    //取出所属行业数据  转为JSON数组
+                    let vocations=sessionStorage.getItem('vocation')
+                    this.vocation=JSON.parse(vocations)
+                }).catch(()=>{
+                })
             },
             select_vocation(e){
                 this.company.vocation=e.target.value;
@@ -178,7 +171,7 @@
             },
             save(){
                 //数据
-                this.company.docs=["rise.jpg"];
+               /* this.company.docs=["rise.jpg"];*/
 
                 //数据校验
                 let validate=true;
@@ -211,6 +204,14 @@
 
                 //数据提交
                 if(validate){
+                    console.log(this.n_docs)
+                    console.log("end")
+                    this.company.docs=[]
+                    this.n_docs.forEach((item,index)=>{
+                        this.company.docs.push(item.url)
+                    })
+                    console.log(this.company.docs)
+                    console.log("end")
                     return request({
                         method:'put',
                         headers: {
@@ -243,8 +244,118 @@
                         this.$message.error('数据提交失败');
                     }));
                 }
-            }
-        }
+            },
+            //文件删除
+            handleRemove(file, fileList) {
+                debugger
+                let _this=this;
+                // let url="";
+                this.fileList=fileList
+                fileList.forEach((item,index)=>{
+                    return index
+                })
+                let  client = new OSS({
+                    accessKeyId:'LTAIUEAyF5F1rtjD',
+                    accessKeySecret:'6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                    region: 'oss-cn-zhangjiakou', // oss地区
+                    bucket: 'cloud-mm'
+                })
+                const f =file.raw
+                const s=file.name
+                client.delete(s,f).then(function (r1) {
+                    debugger
+                    console.log(r1)
+                    if (r1.res.status === 204) {
+                        debugger
+                        console.log('删除了')
+                        console.log(file.uid)
+                        _this.n_docs.forEach((item,index)=>{
+                            if(item.uid == file.uid){
+                                _this.n_docs.splice(index,1)
+                                console.log(_this.n_docs)
+                            }
+                        })
+
+                    }
+
+                }).catch(function (err) {
+                    debugger
+                    console.log(err)
+                });
+            },
+            handlePreview(file) {
+            },
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            //文件上传
+            handleChange(file,fileList) {
+                let _this=this;
+                console.log("kaishi")
+                console.log(file);
+                console.log(fileList)
+                console.log('end')
+               /* let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
+                const extension = testmsg === 'jpg'
+                const extension2 = testmsg === 'bmp'
+                const extension3 = testmsg === 'png'
+                const isLt3M = file.size / 1024 / 1024 < 3;
+                if(!extension &&  !extension2 && !extension3) {
+                    this.$message({
+                        message: '上传文件只能是 jpg、bmp、png格式!',
+                        type: 'warning'
+                    });
+                   _this.fileList=_this.n_docs
+                    this.reload()
+                    console.log(_this.fileList)
+
+                }
+                else if(!isLt3M){
+                    this.$message.warning('上传头像图片大小不能超过 3MB!');
+                    _this.fileList=_this.n_docs
+                    this.reload()
+                    console.log(_this.fileList)
+                }else{*/
+                    let url="";
+                    this.fileList=fileList
+                    // this.fileList = fileList.slice(-3);
+                    let  client = new OSS({
+                        accessKeyId:'LTAIUEAyF5F1rtjD',
+                        accessKeySecret:'6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
+                        region: 'oss-cn-zhangjiakou', // oss地区
+                        bucket: 'cloud-mm'
+                    })
+                    const f =file.raw
+                    const s=file.name
+                    client.put(s,f).then(function (r1) {
+                        if (r1.res.status === 200) {
+                            let b=[]
+                            console.log('上传了')
+                            url=r1.url;
+                            console.log("docs");
+                            console.log(_this);
+                            _this.company.docs.push(url);
+                            console.log( _this.company.docs)
+                            console.log("//")
+                            console.log(file.name)
+                            console.log(file.uid)
+                            console.log(url)
+                            console.log("//")
+                            _this.n_docs.push({
+                                name:file.name,
+                                uid:file.uid,
+                                url:url
+                            })
+                            console.log(_this.n_docs)
+                        }
+                    }).catch(function (err) {
+
+                    });
+                }
+
+              }
+           /* }*/
     }
 </script>
 

@@ -33,7 +33,7 @@
                        @change="getSendTime">
                    </el-date-picker>
                 </span>
-                <el-button type="button" class="btn-search" @click="search">查询</el-button>
+                <button type="button" class="btn-search" @click="search">查询</button>
             </div>
 
         </div>
@@ -43,7 +43,7 @@
                     <p>查询符合上述条件得企业数据<span>{{this.total}}</span>条</p>
                 </div>
                 <div class="msg-right">
-                    <!--<el-button type="button" class="btn-small" >推送数据</el-button>-->
+                    <el-button type="button" class="btn-small" >推送数据</el-button>
                 </div>
             </div>
             <el-table
@@ -117,9 +117,7 @@
             </div>
         </div>
     </div>
-
 </template>
-
 <script>
     import request from '@/untils/request'
     import moment from 'moment'
@@ -128,18 +126,13 @@
         inject:['reload'],//注入reload方法
         data() {
             return {
-                icon:'iconfont icon-round-headset_mic- color',
-                iconShow:'iconfont icon-bofang color',
-                musicShow:false,
-                musicH:true,
-                musicS:false,
-                beginTime:'',
-                endTime:'',
-                pag_show:true,
-                needstateData:[],
-                rowId:'',
-                rowName:'',
-                tableName:[],
+                musicShow:false,//隐藏audio播放器
+                beginTime:'',//选择日期  开始日期
+                endTime:'',//选择日期  结束日期
+                pag_show:true,//分页是否显示
+                needstateData:[],//需求状态数据
+                rowId:'',//线索查询id
+                rowName:'',//线索查询name
                 pickerOptions1: {
                     disabledDate(time) {
                         return time.getTime() > Date.now();
@@ -149,55 +142,27 @@
                         onClick(picker) {
                             picker.$emit('pick', new Date());
                         }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
                     }]
-                },
-                tableData:[],
+                },//element-ui日期组件 默认选中今天
+                tableData:[],//表格数据数组
                 pageSize:10,//每页十条
-                total:0,
-                currentPage: 1,
+                total:0,//总数
+                currentPage: 1,//当前页
                 nameData:[],//需求名称下拉列表数组
                 demand:{
                     id:'',
                     newDemand:'',
-                    dName:''
                 }
 
             }
         },
         created(){
-            this.demand.newDemand=this.$route.query.rowName;
-
-            this.requirements()
-            //this.getDemandlist()
-            this.getDemand()
-            this.checkClue()
-
-        },
-        mounted(){
-
+            this.demand.newDemand=this.$route.query.rowName;//初始化需求名称
+            this.getDemand();//初始化需求名称字典查询
+            this.getDemandlist()//初始化数据列表
+            this.checkClue()//初始化点击线索查询
         },
         methods: {
-            getSbeginTime(val){
-                this.newRole.beginTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
-            },
-            getSendTime(val){
-                this.newRole.endTime=val;//这个sTime是在data中声明的，也就是v-model绑定的值
-            },
-
             //时间格式化
             dateFormat:function(row, column) {
                 var date = row[column.property];
@@ -206,93 +171,71 @@
                 }
                 return moment(date).format("YYYY-MM-DD");
             },
-            handleSizeChange(pageSize) {//每页条数切换
+            //这个sTime是在data中声明的，也就是v-model绑定的值
+            getSbeginTime(val){
+                this.newRole.beginTime=val;
+            },
+            //这个sTime是在data中声明的，也就是v-model绑定的值
+            getSendTime(val){
+                this.newRole.endTime=val;
+            },
+            //每页条数切换
+            handleSizeChange(pageSize) {
                 this.pageSize=pageSize
             },
-            handleCurrentChange(currentPage) {//页码切换
+            //页码切换
+            handleCurrentChange(currentPage) {
                 this.currentPage=currentPage
                 this.getDemandlist()
             },
+            //表格表头样式
             tableHeaderColor({row, column, rowIndex, columnIndex}) {
                 if (rowIndex === 0) {
                     return 'background-color: #ffff;'
                 }
             },
+            //需求名称
             changeDemand(event){
-                // this.demand.id=event.target.value;
-                console.log("did");
-                // console.log(this.demand.id);
                 this.newDemand = event;
-                console.log(this.newDemand);
-
-            },
-            //获取业务需求数据
-            requirements() {
-                const res=this.$store.dispatch("dictionary")
-                res.then(()=>{
-                    let dictData=this.$store.state.user.dict
-                    //根据相同的groupId组成新的数组
-                    let map={},
-                        dest=[];
-                    for(var i=0;i<dictData.length;i++){
-                        let ai=dictData[i];
-                        if(!map[ai.groupId]){
-                            dest.push({
-                                groupId:ai.groupId,
-                                dDescribe:ai.dDescribe,
-                                data:[ai]
-                            });
-                            map[ai.groupId]=ai
-                        }else{
-                            for (var j=0;j<dest.length;j++) {
-                                let dj=dest[j];
-                                if(dj.groupId==ai.groupId){
-                                    dj.data.push(ai)
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    this.needstateData=dest[4].data  //需求状态数据
-                }).catch(()=>{
-
-                })
             },
             //获取需求名称字典查询
             getDemand(){
+                  let params={
+                       page:0,
+                       size:1000
+                 }
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/demand',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
-                    params:{
-                        page:0,
-                        size:1000
-                    }
+                    params:params
                 }).then((res)=>{
                     let rowId=this.$route.query.rowId
-                    console.log(res.data.data.list)
                     this.nameData=res.data.data.list
                     let timeUpate=new Date()
                 }).catch((error)=>{
                 })
             },
             //获取列表
-          /*  getDemandlist(){
+            getDemandlist(){
+              let  params={
+                 demandId:this.newDemand,
+                 beginDate:this.beginTime,
+                 endDate:this.endTime,
+                 page:this.currentPage-1,
+                 size:this.pageSize
+                }
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/thread',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
-                    params:{
-                        page:this.currentPage-1,
-                        size:this.pageSize
-                    }
+                    params:params
                 }).then((res)=>{
                     this.tableData=res.data.data.list
-                    console.log()
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
                             this.tableData[i].parentType='父亲'
@@ -313,34 +256,28 @@
                     }else{
                         this.pag_show=true;
                     }
-                    console.log(data)
                 }).catch((error)=>{
                 })
-            },*/
+            },
             //点击线索查询
             checkClue(){
                 let rowId=this.$route.query.rowId;
                 this.rowName=this.$route.query.rowName
-                let parm={
+                let params={
                     demandId:rowId,
                     beginDate:this.beginTime,
                     endDate:this.endTime,
                     page:this.currentPage-1,
                     size:this.pageSize
                 }
-                console.log("trst");
-                console.log(parm);
-                console.log(rowId)
                 return request({
                     methods:'get',
                     url:'/mai-meng-cloud/thread',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
-                    params:parm
+                    params:params
                 }).then((res)=>{
-                    console.log("result");
-                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
@@ -363,58 +300,17 @@
                         this.pag_show=true;
                     }
                 }).catch((error)=>{
-                    debugger
-                    console.log("失败")
-
                 })
             },
             //查询
             search(){
-                return request({
-                    methods:'get',
-                    url:'/mai-meng-cloud/thread',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                    },
-                    params:{
-                        demandId:this.newDemand,
-                        beginDate:this.beginTime,
-                        endDate:this.endTime,
-                        page:this.currentPage-1,
-                        size:this.pageSize
-                    }
-                }).then((res)=>{
-                    this.tableData=res.data.data.list
-                    for (var i=0;i<this.tableData.length;i++){
-                        if (this.tableData[i].parentType==1){
-                            this.tableData[i].parentType='父亲'
-                        } else{
-                            this.tableData[i].parentType='母亲'
-                        }
-                        if(this.tableData[i].sex==1){
-                            this.tableData[i].sex='男'
-                        }else{
-                            this.tableData[i].sex='女'
-                        }
-                    }
-                    let data=res.data.data.list
-                    let timeUpate=new Date()
-                    this.total=res.data.data.totalCount
-                    if(this.total == 0){
-                        this.pag_show=false;
-                    }else{
-                        this.pag_show=true;
-                    }
-
-                }).catch((error)=>{
-                })
-
+                //获取列表
+                this.getDemandlist();
             },
-            //点击播放
+            //点击播放 //点击暂停
             playPause(row,index,event){
                 let url=row.videoPath
                 let audio=document.getElementById('music')
-                // let iconClass=document.getElementsByClassName('iconfont icon-round-headset_mic- color')
                 let iconShow=event.target.getAttribute('class')
                 let iconName=event.target.getAttribute('name')
                 if (iconShow == 'iconfont icon-round-headset_mic- color') {
@@ -429,11 +325,11 @@
                      let i_list=document.getElementsByName("play");
                      event.target.setAttribute("class", "iconfont icon-round-headset_mic- color")
                      audio.pause()
-                         }
+                  }
             },
             //每页显示多少条
-            change_size(){
-                this.pageSize=document.getElementById("pager-size").value;
+            change_size(event){
+                this.pageSize=event.target.value;
                 this.search();
             }
         },
@@ -458,10 +354,10 @@
     .clue-list .el-table th>.cell{
         text-align: center;
     }
-    .btn-small{
+    /*.btn-small{
         position: absolute;
         right: 30px;
-    }
+    }*/
     .color{color: #1d90e6;cursor: pointer}
     .pager-left{
         float: left;

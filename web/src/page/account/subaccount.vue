@@ -56,6 +56,9 @@
                         <a href="javascript:void(0)" @click="subaccount_edit(value.id,value.account,value.name,value.mobile,value.roleId)">修改</a>
                     </td>
                 </tr>
+                <tr v-if="list.totalPage<=0">
+                    <td colspan="6" style="background-color: #fafafa;">暂无数据</td>
+                </tr>
                 </tbody>
             </table>
             <div class="table-pager">
@@ -191,9 +194,9 @@
                     account:"",
                     name:"",
                     password:"",
-                    passwords:"",
+                    passwords:"",///
                     mobile:"",
-                    role:"",
+                    role:"",//
                     roleid:0,
                     state:0
                 },

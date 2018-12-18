@@ -1,7 +1,6 @@
 import { login , dictionary} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/untils/auth'
 import md5 from 'js-md5'
-
 const user = {
   state: {
     token: getToken(),
@@ -55,7 +54,63 @@ const user = {
     dictionary({ commit }){
         return new Promise((resolve , reject)=>{
             dictionary().then(response=>{
+                debugger
                 const data=response.data.data
+                console.log(data)
+                //根据相同的groupId组成新的数组
+                let map={},
+                    dest=[];
+                for(var i=0;i<data.length;i++){
+                    let ai=data[i];
+                    if(!map[ai.groupId]){
+                        dest.push({
+                            groupId:ai.groupId,
+                            dDescribe:ai.dDescribe,
+                            data:[ai]
+                        });
+                        map[ai.groupId]=ai
+                    }else{
+                        for (var j=0;j<dest.length;j++) {
+                            let dj=dest[j];
+                            if(dj.groupId==ai.groupId){
+                                dj.data.push(ai)
+                                break;
+                            }
+                        }
+                    }
+                }
+                //存储运营模式数据
+                let operationDatas=dest[0].data
+                let operationData=JSON.stringify(operationDatas)
+                sessionStorage.setItem('operationData',operationData)
+                //存储业务分类数据
+                let businessDatas=dest[1].data
+                let businessData=JSON.stringify(businessDatas)
+                sessionStorage.setItem('businessData',businessData)
+                //存储课价水平数据
+                let priceleveDatas=dest[2].data
+                let priceleveData=JSON.stringify(priceleveDatas)
+                sessionStorage.setItem('priceleveData',priceleveData)
+                //存储目标区域数据
+                let regionDatas=dest[3].data
+                let regionData=JSON.stringify(regionDatas)
+                sessionStorage.setItem('regionData',regionData)
+                //存储线索模板数据
+                let cluesDatas=dest[5].data
+                let cluesData=JSON.stringify(cluesDatas)
+                sessionStorage.setItem('cluesData',cluesData)
+                //存储需求状态数据
+                let needstateDatas=dest[4].data
+                //转换Json数组为Json字符串
+                let needstateData1=JSON.stringify(needstateDatas)
+                //存储需求状态数组  Json字符串
+                sessionStorage.setItem('needstatedData',needstateData1)
+                //存储所属行业数组
+                let vocations=dest[7].data
+                //转换Json数组为Json字符串
+                let vocation=JSON.stringify(vocations)
+                //存储需求状态数组  Json字符串
+                sessionStorage.setItem('vocation',vocation)
                 commit('SET_DICT', data);
                 resolve()
             }).catch(error=>{

@@ -37,11 +37,11 @@
                     <el-form class="form-box" id="step-2" v-show="second_step" :model="amendPassForm"  status-icon  ref="amendPassForm">
                         <el-form-item class="form-input" prop="password">
                             <span class="input-left">设置密码</span>
-                            <el-input v-model="amendPassForm.password" placeholder="设置密码"></el-input>
+                            <el-input type="password" v-model="amendPassForm.password" placeholder="设置密码"></el-input>
                         </el-form-item>
                         <el-form-item class="form-input" prop="newPassword">
                             <span class="input-left">确认密码</span>
-                            <el-input v-model="amendPassForm.newPassword" placeholder="确认密码"></el-input>
+                            <el-input type="password" v-model="amendPassForm.newPassword" placeholder="确认密码"></el-input>
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-set-password" @click="checkSecond('amendPassForm')">下一步</button>
@@ -63,7 +63,6 @@
         </div>
     </div>
 </template>
-
 <script>
     import request from '../untils/request'
     import md5 from 'js-md5'
@@ -72,25 +71,26 @@
        data(){
            return{
                amendPassForm:{
-                   phone:'',
-                   code:'',
-                   password:'',
-                   newPassword:'',
+                   phone:'',//手机号
+                   code:'',//验证码
+                   password:'',//新密码
+                   newPassword:'',//确认新密码
                },
-               first_step:true,
-               second_step:false,
-               third_step:false,
+               first_step:true,//验证手机号表单
+               second_step:false,//修改密码表单
+               third_step:false,//找回密码表单
            }
        },
         methods:{
+            //返回登录页面
             login(){
                 this.$router.push({
                     path:'/'
                 })
                 this.reload()
             },
+            //点击下一步进入修改密码页面
             checkFirst(){
-
                 if(this.amendPassForm.phone == ''){
                    this.$message.error("请输入手机号")
                 }else if(this.amendPassForm.code == ''){
@@ -99,10 +99,10 @@
                     this.first_step=false
                     this.second_step=true
                     let arr=document.getElementsByClassName('tab_item')
-                    arr[0].classList.remove("over")
                     arr[1].classList.add("over")
                 }
             },
+            //修改密码并进入找回密码页面
             checkSecond(amendPassForm){
                 if(this.amendPassForm.password == ''){
                      this.$message.error("请输入密码")
@@ -132,7 +132,6 @@
                             }).then((res)=>{
                                 this.second_step=false,
                                 this.third_step=true,
-                                arr[1].classList.remove("over")
                                 arr[2].classList.add("over")
                             }).catch((error)=>{
                             })
