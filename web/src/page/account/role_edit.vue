@@ -74,7 +74,9 @@
     import {dictionary} from '@/api/login'
     import request from '@/untils/request'
 
+
     export default {
+        inject:['reload'],
         data(){
             return {
                 role:{
@@ -303,6 +305,7 @@
                                     message: '添加成功'
                                 });
                                 this.cancel();
+                                this.reload();
                             }else{
                                 this.$message.error('添加失败');
                             }

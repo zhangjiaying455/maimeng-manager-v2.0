@@ -6,7 +6,7 @@
  * baseImgPath: 图片存放地址
  *
  */
-let baseUrl = 'http://47.92.107.76:88';
+let baseUrl = 'http://47.92.107.76';
 let routerMode = 'hash';
 let baseImgPath;
 

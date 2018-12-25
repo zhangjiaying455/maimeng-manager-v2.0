@@ -7,12 +7,23 @@
             <div class="search-item">
                 <span class="item-left">需求名称</span>
                 <span class="item-right">
-                   <el-select  v-model="demand.newDemand" @change="changeDemand($event)" >
+                   <el-select  v-model="demand.newDemand" @change="changeDemand($event)">
                        <el-option label="全部" value="">全部</el-option>
                        <template v-for="item in nameData">
                            <el-option :label="item.name" :value="item.id"  :key="item.dKey">{{item.name}}</el-option>
                        </template>
 
+                   </el-select>
+                </span>
+            </div>
+            <div class="search-item">
+                <span class="item-left">质检结果</span>
+                <span class="item-right">
+                   <el-select v-model="demand.qualitySearch" @change="changeDemandSearch($event)">
+                        <el-option label="全部" value="">全部</el-option>
+                       <template v-for="(item,index) in qualityList">
+                            <el-option :label="item.name"  :value="item.id" :key="index">{{item.name}}</el-option>
+                       </template>
                    </el-select>
                 </span>
             </div>
@@ -33,7 +44,7 @@
                        @change="getSendTime">
                    </el-date-picker>
                 </span>
-                <button type="button" class="btn-search" @click="search">查询</button>
+                <el-button type="button" class="btn-search" @click="search">查询</el-button>
             </div>
 
         </div>
@@ -43,7 +54,7 @@
                     <p>查询符合上述条件得企业数据<span>{{this.total}}</span>条</p>
                 </div>
                 <div class="msg-right">
-                    <el-button type="button" class="btn-small" >推送数据</el-button>
+                    <el-button type="button" class="btn-small" @click="checkPush">推送今日数据</el-button>
                 </div>
             </div>
             <el-table
@@ -70,10 +81,6 @@
                     label="家长称呼">
                 </el-table-column>
                 <el-table-column
-                    prop="parentType"
-                    label="家长身份">
-                </el-table-column>
-                <el-table-column
                     prop="age"
                     label="孩子年龄">
                 </el-table-column>
@@ -82,19 +89,36 @@
                     label="孩子性别">
                 </el-table-column>
                 <el-table-column
-                    prop="demandName"
-                    label="需求名称">
+                    prop="state"
+                    label="质检结果">
                 </el-table-column>
                 <el-table-column
                     prop="address"
                     label="操作">
                     <template slot-scope="scope">
                         <i id="record" name="play" @change="hh(iconName)"  class="iconfont icon-round-headset_mic- color" @click="playPause(scope.row,scope.$index,$event)"></i>
-                        <!--<i class="iconfont icon-xiangqing color"></i>-->
+                        <!--<i class="quality"><img src="../../images/quality.png"></i>-->
+                        <i class="iconfont icon-zhijian1 color" @click="quality(scope.row)"></i>
                     </template>
                 </el-table-column>
             </el-table>
             <audio v-show="musicShow"   preload="auto" controls="controls" id="music"></audio>
+            <el-dialog title="请选择质检状态" :visible.sync="dialogVisible" style="top: 20%;">
+                <div class="search-item">
+                    <span class="item-left">质检状态:</span>
+                    <span class="item-right">
+                     <el-select v-model="demand.qualityName" @change="changeQuality($event)">
+                         <template v-for="(item,index) in qualityList">
+                            <el-option :label="item.name"  :value="item.id" :key="index">{{item.name}}</el-option>
+                        </template>
+                     </el-select>
+                   </span>
+                </div>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="qualitSubmit">确定</el-button>
+                </div>
+            </el-dialog>
             <div class="pager-left" v-if="pag_show">
                 <span>每页显示：</span>
                 <select id="pager-size" @change="change_size">
@@ -126,6 +150,8 @@
         inject:['reload'],//注入reload方法
         data() {
             return {
+                id:'',//质检的rowd
+                dialogVisible:false,
                 musicShow:false,//隐藏audio播放器
                 beginTime:'',//选择日期  开始日期
                 endTime:'',//选择日期  结束日期
@@ -152,7 +178,10 @@
                 demand:{
                     id:'',
                     newDemand:'',
-                }
+                    qualityName:'',
+                    qualitySearch:''
+                },
+                qualityList:[]
 
             }
         },
@@ -161,6 +190,14 @@
             this.getDemand();//初始化需求名称字典查询
             this.getDemandlist()//初始化数据列表
             this.checkClue()//初始化点击线索查询
+            this.qualityList.push({
+                name:'未通过',
+                id:-1
+            },{
+                name:'已通过',
+                id:0
+            })
+            console.log(this.qualityList)
         },
         methods: {
             //时间格式化
@@ -198,6 +235,12 @@
             changeDemand(event){
                 this.newDemand = event;
             },
+            changeQuality(event){
+                this.qualityName=event
+            },
+            changeDemandSearch(event){
+                this.qualitySearch=event;
+            },
             //获取需求名称字典查询
             getDemand(){
                   let params={
@@ -220,12 +263,14 @@
             },
             //获取列表
             getDemandlist(){
+                debugger
               let  params={
                  demandId:this.newDemand,
                  beginDate:this.beginTime,
                  endDate:this.endTime,
                  page:this.currentPage-1,
-                 size:this.pageSize
+                 size:this.pageSize,
+                 state:this.demand.qualitySearch
                 }
                 return request({
                     methods:'get',
@@ -235,6 +280,8 @@
                     },
                     params:params
                 }).then((res)=>{
+                    debugger
+                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
@@ -247,6 +294,11 @@
                         }else{
                             this.tableData[i].sex='女'
                         }
+                        if (this.tableData[i].state==0){
+                            this.tableData[i].state='已通过'
+                        }else{
+                            this.tableData[i].state='未通过'
+                        }
                     }
                     let data=res.data.data.list
                     let timeUpate=new Date()
@@ -257,6 +309,8 @@
                         this.pag_show=true;
                     }
                 }).catch((error)=>{
+                    debugger
+                    console.log(error)
                 })
             },
             //点击线索查询
@@ -290,6 +344,11 @@
                         }else{
                             this.tableData[i].sex='女'
                         }
+                        if (this.tableData[i].state==0){
+                            this.tableData[i].state='已通过'
+                        }else{
+                            this.tableData[i].state='未通过'
+                        }
                     }
                     let data=res.data.data.list
                     let timeUpate=new Date()
@@ -309,29 +368,99 @@
             },
             //点击播放 //点击暂停
             playPause(row,index,event){
-                let url=row.videoPath
-                let audio=document.getElementById('music')
-                let iconShow=event.target.getAttribute('class')
-                let iconName=event.target.getAttribute('name')
-                if (iconShow == 'iconfont icon-round-headset_mic- color') {
-                     let i_list=document.getElementsByName("play");
-                     for(let n=0;n<i_list.length;n++){
-                         i_list[n].className="iconfont icon-round-headset_mic- color";
-                     }
-                     event.target.setAttribute("class", "iconfont icon-bofang color");
-                     audio.src = url;
-                     audio.play()
-                 }else {
-                     let i_list=document.getElementsByName("play");
-                     event.target.setAttribute("class", "iconfont icon-round-headset_mic- color")
-                     audio.pause()
-                  }
+                return request({
+                    methods:'get',
+                    url:'/mai-meng-cloud/thread/'+row.id+'/path',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                }).then((res)=>{
+                    debugger
+                    console.log(res.data)
+                    let url=res.data.data
+                    console.log(url)
+                    let audio=document.getElementById('music')
+                    let iconShow=event.target.getAttribute('class')
+                    let iconName=event.target.getAttribute('name')
+                    if (iconShow == 'iconfont icon-round-headset_mic- color') {
+                        let i_list=document.getElementsByName("play");
+                        for(let n=0;n<i_list.length;n++){
+                            i_list[n].className="iconfont icon-round-headset_mic- color";
+                        }
+                        event.target.setAttribute("class", "iconfont icon-bofang color");
+                        audio.src = url;
+                        audio.play()
+                    }else {
+                        let i_list=document.getElementsByName("play");
+                        event.target.setAttribute("class", "iconfont icon-round-headset_mic- color")
+                        audio.pause()
+                    }
+                }).catch((error)=>{
+                    debugger
+                    console.log(error)
+                })
+
             },
             //每页显示多少条
             change_size(event){
                 this.pageSize=event.target.value;
                 this.search();
+            },
+            //修改某个线索的质检结果
+            quality(row){
+                this.id=row.id
+                this.dialogVisible=true
+            },
+            qualitSubmit(row){
+                let params={
+                    id:this.id,
+                    state:this.qualityName,
+                }
+                console.log(this.id)
+                console.log(this.qualityName)
+                return request({
+                    method:'put',
+                    url:'/mai-meng-cloud/thread',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    params:params
+                }).then((res)=>{
+                    debugger
+                    console.log(res)
+                    this.dialogVisible=false
+                    this.getDemandlist();
+                    /*   this.reload()*/
+
+                }).catch((error)=>{
+                    debugger
+                    console.log(error)
+
+                })
+            },
+            checkPush(){
+                debugger
+                return request({
+                    methods:'post',
+                    url:'/mai-meng-cloud/thread',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                }).then((res)=>{
+                    debugger
+                    this.$message({
+                        type:'success',
+                        message:'推送成功'
+                    })
+                }).catch((error)=>{
+                    this.$message({
+                        type:'error',
+                        message:'推送失败'
+                    })
+                })
+
             }
+
         },
         computed:{
             ...mapGetters([
@@ -350,6 +479,7 @@
     .clue-list .btn-search{
         height: 35px;
         line-height: 15px;
+
     }
     .clue-list .el-table th>.cell{
         text-align: center;
@@ -358,11 +488,12 @@
         position: absolute;
         right: 30px;
     }*/
-    .color{color: #1d90e6;cursor: pointer}
+    .color{color: #1d90e6;cursor: pointer;margin-left: 10px}
     .pager-left{
         float: left;
         width: 200px;
         margin-top: 15px;
+
     }
     .pager-left select{
         color: #c9c7c7;
@@ -373,6 +504,24 @@
         border-radius: 3px;
         height: 28px;
     }
+    .clue-list .el-dialog--small{
+        width: 30%;
+        height:200px;
+    }
+    .clue-list .el-date-editor.el-input {
+        width: 170px;
+    }
+   .clue-list .el-select{
+       width: 170px;
+   }
+    /*.clue-list .el-dialog__footer{
+        text-align: center;
+    }*/
 
+  /*  .quality img{
+        width: 18px;
+        !* color: blue; *!
+        vertical-align: text-bottom
+    }*/
 </style>
 

@@ -65,12 +65,14 @@
                             <el-upload
                                 class="upload-demo"
                                 ref="upload"
-                                action="https://jsonplaceholder.typicode.com/posts/"
+                                action=""
+                                :show-file-list="true"
                                 :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
-                                :auto-upload="false"
-                                :on-change="handleChange">
+                                :auto-upload="true"
+                                :before-upload="beforeUpload"
+                                :on-progress="handleChange">
                                 <el-button slot="trigger" size="medium" type="warning" style="width: 200px;">上传附件材料</el-button>
                                       <p class="remark-info">* 营业执照、税务登记证、组织机构代码证三证合一</p>
                                       <p class="remark-info">* 必须为清晰 、完整的彩色原件扫描件或数码照</p>
@@ -289,34 +291,26 @@
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
-            //文件上传
-            handleChange(file,fileList) {
-                let _this=this;
-                console.log("kaishi")
-                console.log(file);
-                console.log(fileList)
-                console.log('end')
-               /* let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
-                const extension = testmsg === 'jpg'
-                const extension2 = testmsg === 'bmp'
-                const extension3 = testmsg === 'png'
-                const isLt3M = file.size / 1024 / 1024 < 3;
-                if(!extension &&  !extension2 && !extension3) {
-                    this.$message({
-                        message: '上传文件只能是 jpg、bmp、png格式!',
-                        type: 'warning'
-                    });
-                   _this.fileList=_this.n_docs
-                    this.reload()
-                    console.log(_this.fileList)
+            beforeUpload(file){
+                debugger
+                console.log(file)
+                console.log(file.type)
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 100;
 
+                if (!isJPG) {
+                    debugger
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
                 }
-                else if(!isLt3M){
-                    this.$message.warning('上传头像图片大小不能超过 3MB!');
-                    _this.fileList=_this.n_docs
-                    this.reload()
-                    console.log(_this.fileList)
-                }else{*/
+                if (!isLt2M) {
+                    debugger
+                    this.$message.error('上传头像图片大小不能超过 100MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            //文件上传
+            handleChange(event,file,fileList) {
+                let _this=this;
                     let url="";
                     this.fileList=fileList
                     // this.fileList = fileList.slice(-3);
@@ -330,32 +324,29 @@
                     const s=file.name
                     client.put(s,f).then(function (r1) {
                         if (r1.res.status === 200) {
+                            debugger
                             let b=[]
                             console.log('上传了')
                             url=r1.url;
-                            console.log("docs");
-                            console.log(_this);
                             _this.company.docs.push(url);
                             console.log( _this.company.docs)
-                            console.log("//")
-                            console.log(file.name)
-                            console.log(file.uid)
-                            console.log(url)
-                            console.log("//")
                             _this.n_docs.push({
                                 name:file.name,
                                 uid:file.uid,
                                 url:url
                             })
                             console.log(_this.n_docs)
+                            _this.fileList=_this.n_docs
+                            console.log(_this.fileList)
                         }
                     }).catch(function (err) {
-
+                        debugger
+                        console.log(error)
                     });
                 }
 
               }
-           /* }*/
+
     }
 </script>
 

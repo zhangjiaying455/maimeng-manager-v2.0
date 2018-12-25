@@ -116,12 +116,13 @@
                                 <el-upload
                                     class="upload-demo"
                                     ref="upload"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
-                                    :on-preview="handlePreview"
+                                    action=""
+                                    :show-file-list="true"
                                     :on-remove="handleRemove"
                                     :file-list="fileList"
-                                    :on-change="handleChange"
-                                    :auto-upload="false">
+                                    :before-upload="beforeUpload"
+                                    :on-progress="handleChange"
+                                    :auto-upload="true">
                                <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
                                      <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
                                 </el-upload>
@@ -280,7 +281,7 @@
                         </div>
                         <div class="info-item">
                             <span class="item-left">产品介绍</span>
-                            <span class="item-right">
+                            <span class="item-right product">
                                 <ul>
                                   <li v-for="item in fileList">{{item.name}}</li>
                                 </ul>
@@ -431,7 +432,6 @@
             this.getDictionary()
             this.getBrand()
             this.editor();
-
         },
         methods:{
             //这个sTime是在data中声明的，也就是v-model绑定的值
@@ -466,7 +466,6 @@
                     debugger
                     console.log(r1)
                     if (r1.res.status === 204) {
-                        /*  let b=[]*/
                         console.log('删除了')
                         _this.n_docs.forEach((item,index)=>{
                             debugger
@@ -484,36 +483,30 @@
                 });
             },
             //点击文件列表中已上传的文件时的钩子
-            handlePreview(file) {
-            },
             /*  handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },*/
+            beforeUpload(file){
+                debugger
+                console.log(file)
+                console.log(file.type)
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 100;
+
+                if (!isJPG) {
+                    debugger
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    debugger
+                    this.$message.error('上传头像图片大小不能超过 100MB!');
+                }
+                return isJPG && isLt2M;
+            },
             //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
-            handleChange(file,fileList){
+            handleChange(event,file,fileList){
                 let _this = this;
-             /*   let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
-                const extension = testmsg === 'doc'
-                const extension2 = testmsg === 'pdf'
-                const extension3 = testmsg === 'ppt'
-                const isLt100M = file.size / 1024 / 1024 < 100;*/
-               /* if(!extension &&  !extension2 && !extension3) {
-                    debugger
-                    this.$message({
-                        message: '上传文件只能是 doc、pdf、ppt格式!',
-                        type: 'warning'
-                    });
-                    _this.fileList=_this.n_docs
-                    console.log(_this.fileList)
-                    this.reload()
-                }else if(!isLt100M){
-                    debugger
-                    this.$message.warning('上传头像图片大小不能超过 100MB!');
-                    _this.fileList=_this.n_docs
-                    console.log(_this.fileList)
-                    this.reload()
-                }else {*/
                     let url = "";
                     debugger
                     let client = new OSS({
@@ -538,13 +531,13 @@
                                 url: url
                             })
                             console.log(_this.n_docs)
-
+                            _this.fileList=_this.n_docs
+                            console.log(_this.fileList)
                         }
                     }).catch(function (err) {
                         debugger
                         console.log(err)
                     });
-               /* }*/
             },
             //点击下一步进入品牌信息
             checkSecond(){
@@ -582,14 +575,18 @@
                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                         },
                 }).then((res)=>{
+                     debugger
+                      console.log(res.data.data)
                      this.brandEntityId=res.data.data.brandEntity.id
                      this.demandId=res.data.data.demand.id
                      this.threadTemplateId=res.data.data.threadTemplate.id
 
                     let demand=res.data.data.demand
+                     //补充说明
+                    this.newRole.supplementary=demand.remark
                     let docsArr=demand.docs;
                     //console.log(docsArr)
-                        let newDocs=[]
+                     let newDocs=[]
                      for(let i=0;i<docsArr.length;i++){
                          this.newRole.docs.push(docsArr[i])
                          let docs=docsArr[i].split('/')
@@ -607,24 +604,23 @@
                     //结束时间
                     this.newRole.endTime=demand.endTime
                         //判断运营模式
-                        this.newRole.operationMode=demand.operationMode
-                        if(demand.operationMode==1){
-                            this.operationValue='线上'
-                        }else{
-                            this.operationValue='线下'
-                        }
-
+                    this.newRole.operationMode=demand.operationMode
+                        let operationData=this.operationData
+                        operationData.forEach((item)=>{
+                            if(demand.operationMode==item.dKey){
+                                debugger
+                                this.operationValue=item.dValue
+                                console.log(this.operationValue)
+                            }
+                        })
                         //判断业务分类
                         this.newRole.businessClassification=demand.businessClassification
-                        if(demand.businessClassification==1){
-                            this.businessValue='幼儿早教'
-                        }else if (demand.businessClassification==2){
-                            this.businessValue='少儿英语'
-                        }else if(demand.businessClassification==3){
-                            this.businessValue='成人英语'
-                        }else{
-                            this.businessValue='少儿编程'
-                        }
+                       /* let businessData=this.businessData
+                        businessData.forEach((item)=>{
+                            if(demand.businessClassification==item.dKey){
+                                this.businessValue=item.dValue
+                            }
+                        })*/
                         //分割年龄范围
                         let ageRange=demand.ageRange.split(',')
                         for(var i=0;i<ageRange.length;i++){
@@ -633,25 +629,25 @@
                         }
                         //判断课价水平
                         this.newRole.priceLevel=demand.priceLevel
-                        if(demand.priceLevel==1){
-                            this.priceLevelValue='低'
-                        }else if (demand.priceLevel==2){
-                            this.priceLevelValue='普通'
-                        }else{
-                            this.priceLevelValue='高'
-                        }
-
+                       /* let priceleveData=this.priceleveData
+                        priceleveData.forEach((item)=>{
+                            if(demand.priceLevel==item.dKey){
+                                this.priceLevelValue=item.dValue
+                            }
+                        })*/
                         //判断目标区域
                         this.newRole.area=demand.area
-                        if(demand.area==1){
-                            this.areaValue='一线城市'
-                        }else if (demand.area==2){
-                            this.areaValue='二线城市'
-                        }else{
-                            this.areaValue='三线城市'
-                        }
-
+                       /* let regionData=regionData
+                        regionData.forEach((item)=>{
+                            if(demand.area==item.dKey){
+                                this.areaValue=item.dValue
+                            }
+                        })*/
                         let brandEntity=res.data.data.brandEntity
+                        //联系人邮箱
+                        this.newRole.email=brandEntity.email
+                        //备注说明
+                        this.newRole.remark=brandEntity.remark
                         //品牌名称
                         this.newRole.brand=brandEntity.brand
                         //负责联系人
@@ -715,46 +711,46 @@
             //更改运营模式
             changeOperation(event){
                 this.operationMode = event; //获取运营模式的ID，即option对应的ID值
-                if(this.operationMode==1){
-                    this.operationValue='线上'
-                }else{
-                    this.operationValue='线下'
-                }
+                let operationData=this.operationData
+                operationData.forEach((item)=>{
+                    if(this.operationMode==item.dKey){
+                        this.operationValue=item.dValue
+                        console.log(this.operationValue)
+                    }
+                })
             },
             //更改业务分类
             changeClass(event){
                 this.businessClassification = event;
-                if(this.businessClassification==1){
-                    this.businessValue='幼儿早教'
-                }else if (this.businessClassification==2){
-                    this.businessValue='少儿英语'
-                }else if(this.businessClassification==3){
-                    this.businessValue='成人英语'
-                }else{
-                    this.businessValue='少儿编程'
-                }
+                let businessData=this.businessData
+                businessData.forEach((item)=>{
+                    if(this.businessClassification==item.dKey){
+                        this.businessValue=item.dValue
+                        console.log(this.businessValue)
+                    }
+                })
             },
             //更改课价水平
             changeAcademic(event){
                 this.priceLevel = event;
-                if(this.priceLevel==1){
-                    this.priceLevelValue='低'
-                }else if (this.priceLevel==2){
-                    this.priceLevelValue='普通'
-                }else{
-                    this.priceLevelValue='高'
-                }
+                let priceleveData=this.priceleveData
+                priceleveData.forEach((item)=>{
+                    if(this.priceLevel==item.dKey){
+                        this.priceLevelValue=item.dValue
+                        console.log(this.priceLevelValue)
+                    }
+                })
             },
             //更改目标区域
             changeObject(event){
                 this.area = event;
-                if(this.area==1){
-                    this. areaValue='一线城市'
-                }else if (this.area==2){
-                    this. areaValue='二线城市'
-                }else{
-                    this. areaValue='三线城市'
-                }
+                let regionData=this.regionData
+                regionData.forEach((item)=>{
+                    if(this.area==item.dKey){
+                        this. areaValue=item.dValue
+                        console.log(this.areaValue)
+                    }
+                })
             },
             //更新需求确定
             confirm(){
@@ -778,12 +774,14 @@
                             url:'/mai-meng-cloud/demand',
                             data:{
 
-                                "threadTemplate":{ 'id':this.threadTemplateId,"userTags":this.dynamicTags,},
+                                "threadTemplate":{'id':this.threadTemplateId,"userTags":this.dynamicTags,},
                                 "brand":{
                                     'id':this.brandEntityId,
                                     "brand":this.newRole.brand,
                                     'contactPerson':this.newRole.contactPerson,
                                     'mobile':this.newRole.mobile,
+                                    'remark':this.newRole.remark,
+                                    'email':this.newRole.email
                                     },
                                 "demand":{
                                     'id':this.demandId,
@@ -795,7 +793,8 @@
                                     'ageRange':ageRange,
                                     'priceLevel':this.priceLevel,
                                     'area':this.area,
-                                    'docs':this.newRole.docs
+                                    'docs':this.newRole.docs,
+                                    'remark':this.newRole.supplementary
                                 },
                             }
                         }).then((res)=>{
@@ -1055,4 +1054,6 @@
         margin-right: 20px;
         padding: 0 20px;
     }
+    .business .upload-demo{width:360px}
+    .business  .product{width:360px}
 </style>

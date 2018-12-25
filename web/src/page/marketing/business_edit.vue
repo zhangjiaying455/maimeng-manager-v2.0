@@ -116,14 +116,15 @@
                                 <el-upload
                                     class="upload-demo"
                                     ref="upload"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
-                                    :on-preview="handlePreview"
+                                    action=""
+                                    :show-file-list="true"
                                     :on-remove="handleRemove"
                                     :file-list="fileList"
-                                    :auto-upload="false"
-                                    :on-change="handleChange">
+                                    :auto-upload="true"
+                                    :before-upload="beforeUpload"
+                                    :on-progress="handleChange">
                                     <el-button slot="trigger" size="medium" type="warning">上传附件材料</el-button>
-                                     <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
+                                    <p class="remark-info">附件支持ppt、pdf、doc等文件格式，大小不可超过100MB</p>
                                 </el-upload>
                             </span>
                         </div>
@@ -278,7 +279,7 @@
                         </div>
                         <div class="info-item">
                             <span class="item-left">产品介绍</span>
-                            <span class="item-right">
+                            <span class="item-right product">
                                 <ul>
                                     <li v-for="item in fileList">{{item.name}}</li>
                                 </ul>
@@ -479,31 +480,28 @@
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
-
+            beforeUpload(file){
+                debugger
+                console.log(file)
+                 console.log(file.type)
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 100;
+                if (!isJPG) {
+                    debugger
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    debugger
+                    this.$message.error('上传头像图片大小不能超过 100MB!');
+                }
+                return isJPG && isLt2M;
+            },
             //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
-            handleChange(file,fileList) {
-                let _this=this;
-           /*   let testmsg=file.name.substring(file.name.lastIndexOf('.')+1)
-                const extension = testmsg === 'doc'
-                const extension2 = testmsg === 'pdf'
-                const extension3 = testmsg === 'ppt'
-                const isLt100M = file.size / 1024 / 1024 < 100;*/
-              /*  if(!extension &&  !extension2 && !extension3) {
-                    debugger
-                    this.$message({
-                        message: '上传文件只能是 doc、pdf、ppt格式!',
-                        type: 'warning'
-                    });
-                    _this.fileList=_this.n_docs
-                    this.reload()
-                    console.log(_this.fileList)
-
-                }else if(!isLt100M){
-                    debugger
-                    this.$message.warning('上传头像图片大小不能超过 100MB!');
-                    _this.fileList=_this.n_docs
-                    this.reload()
-                }else{*/
+            handleChange(event,file,fileList) {
+                   console.log(event)
+                   console.log(file)
+                   console.log(fileList)
+                    let _this=this;
                     debugger
                     let url="";
                     this.fileList=fileList
@@ -517,23 +515,27 @@
                     const f =file.raw
                     const s=file.name
                     client.put(s,f).then(function (r1) {
+                        debugger
+                        console.log(r1)
                         if (r1.res.status === 200) {
                             let b=[]
                             console.log('上传了')
                             url=r1.url;
                             _this.newRole.docs.push(url);
+                            console.log(_this.newRole.docs)
                             _this.n_docs.push({
                                 name:file.name,
                                 uid:file.uid,
                                 url:url
                             })
+                            console.log(_this.n_docs)
+                            _this.fileList=_this.n_docs
+                            console.log(_this.fileList)
                         }
-                    }).catch(function (err) {
+                    }).catch(function (error) {
+                        debugger
+                        console.log(error)
                     });
-              /*  }*/
-
-
-
             },
             //点击下一步进入品牌信息
             checkSecond(){
@@ -614,46 +616,48 @@
             //更改运营模式
             changeOperation(event){
                 this.operationMode = event; //获取运营模式的ID，即option对应的ID值
-                if(this.operationMode==1){
-                    this.operationValue='线上'
-                }else{
-                    this.operationValue='线下'
-                }
+                let operationData=this.operationData
+                operationData.forEach((item)=>{
+                    if(this.operationMode==item.dKey){
+                        this.operationValue=item.dValue
+                        console.log(this.operationValue)
+                    }
+                })
+
             },
             //更改业务分类
             changeClass(event){
                 this.businessClassification = event;
-                if(this.businessClassification==1){
-                    this.businessValue='幼儿早教'
-                }else if (this.businessClassification==2){
-                    this.businessValue='少儿英语'
-                }else if(this.businessClassification==3){
-                    this.businessValue='成人英语'
-                }else{
-                    this.businessValue='少儿编程'
-                }
+                let businessData=this.businessData
+                businessData.forEach((item)=>{
+                    if(this.businessClassification==item.dKey){
+                        this.businessValue=item.dValue
+                        console.log(this.businessValue)
+                    }
+                })
+
             },
             //更改课价水平
             changeAcademic(event){
                 this.priceLevel = event;
-                if(this.priceLevel==1){
-                    this.priceLevelValue='低'
-                }else if (this.priceLevel==2){
-                    this.priceLevelValue='普通'
-                }else{
-                    this.priceLevelValue='高'
-                }
+                let priceleveData=this.priceleveData
+                priceleveData.forEach((item)=>{
+                    if(this.priceLevel==item.dKey){
+                        this.priceLevelValue=item.dValue
+                        console.log(this.priceLevelValue)
+                    }
+                })
             },
             //更改目标区域
             changeObject(event){
                 this.area = event;
-                if(this.area==1){
-                    this. areaValue='一线城市'
-                }else if (this.area==2){
-                    this. areaValue='二线城市'
-                }else{
-                    this. areaValue='三线城市'
-                }
+                let regionData=this.regionData
+                regionData.forEach((item)=>{
+                    if(this.area==item.dKey){
+                        this. areaValue=item.dValue
+                        console.log(this.areaValue)
+                    }
+                })
             },
             //新建角色确定
             confirm(){
@@ -682,7 +686,8 @@
                                "brand":{"brand":this.newRole.brand,
                                    'contactPerson':this.newRole.contactPerson,
                                    'mobile':this.newRole.mobile,
-                                   'remark':this.newRole.remark
+                                   'remark':this.newRole.remark,
+                                   'email':this.newRole.email
                                },
                                "demand":{
                                    'name':this.newRole.demandName,
@@ -955,4 +960,6 @@
         margin-right: 20px;
         padding: 0 20px;
     }
+    .business .upload-demo{width:360px}
+    .business  .product{width:360px}
 </style>

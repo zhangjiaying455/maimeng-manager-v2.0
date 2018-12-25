@@ -28,7 +28,7 @@
             </div>
             <div class="aside">
                 <!--左侧菜单-->
-                <el-menu unique-opened="true" :default-active="defaultActive" theme="dark" router class="menu-list">
+                <el-menu unique-opened :default-active="defaultActive" theme="dark" router class="menu-list">
                     <el-menu-item class="menu-font" index="manage">
                         <i class="alignment iconfont icon-shouye"></i><span class="text">首页</span>
                     </el-menu-item>

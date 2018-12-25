@@ -40,4 +40,5 @@ axios发delete  删除   method:delete    不能是methods:delete
 
 测试bug:
   忘记密码下一步样式
-  业务需求线索添加业务传 参 
+  业务需求线索添加业务传参
+

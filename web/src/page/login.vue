@@ -63,6 +63,7 @@
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
                         const res=this.$store.dispatch("Login", this.loginForm).then(()=>{
+                            debugger
                             this.$message({
                                 type:'success',
                                 message:'登录成功'
@@ -71,6 +72,8 @@
                                 path:'/manage'
                             })
                         }).catch((error)=>{
+                            debugger
+                            console.log(error)
                         })
                     } else {
                         return false;

@@ -60,7 +60,7 @@
                         <option value="50">每页显示50条</option>
                     </select>
                 </div>
-                <div class="pager-right" v-if="list.totalPage>1">
+                <div class="pager-right" v-if="list.totalPage>0">
                     <div class="pager-box">
                         <ul>
                             <li v-if="pagers.prev"><a href="javascript:void(0)" @click="prev">上一页</a></li>
