@@ -100,9 +100,6 @@
         created(){
             debugger
             this.username=sessionStorage.getItem('username')
-           /* console.log(this.$store)
-            this.username=this.$store.state.user.username;
-            console.log(this.username)*/
 
         },
         computed: {

@@ -12,7 +12,6 @@
                        <template v-for="item in nameData">
                            <el-option :label="item.name" :value="item.id"  :key="item.dKey">{{item.name}}</el-option>
                        </template>
-
                    </el-select>
                 </span>
             </div>
