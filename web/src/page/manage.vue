@@ -9,7 +9,7 @@
                     <div class="right-inner">
                         <div class="user">
                             <span class="user-icon"></span>
-                            <span class="user-info">maimeng-admin</span>
+                            <span class="user-info">{{username}}</span>
                         </div>
                         <a href="javascript:void(0)" class="logout" v-on:click="loginOut()" menu-align='start'></a>
                     </div>
@@ -41,7 +41,7 @@
                         <el-menu-item index="monitoring">数据监测</el-menu-item>
                         <el-menu-item index="bordereaux">业务报表</el-menu-item>
                     </el-submenu>
-                    <el-submenu index="3" >
+                   <!-- <el-submenu index="3" >
                         <template slot="title">
                             <i class="alignment iconfont icon-digital"></i><span class="text">数据管理</span>
                         </template>
@@ -69,7 +69,7 @@
                         <el-menu-item index="call_center">呼叫中心</el-menu-item>
                         <el-menu-item index="platform">投放平台</el-menu-item>
                         <el-menu-item index="sms_touch">短信触达</el-menu-item>
-                    </el-submenu>
+                    </el-submenu>-->
                     <el-submenu index="6">
                         <template slot="title">
                             <i class="alignment iconfont icon-shezhi"></i><span class="text">账号管理</span>
@@ -91,11 +91,18 @@
     import {mapActions, mapState} from 'vuex'
     export default {
         data(){
+
             return {
                 baseImgPath,
+                username:''
             }
         },
         created(){
+            debugger
+            this.username=sessionStorage.getItem('username')
+           /* console.log(this.$store)
+            this.username=this.$store.state.user.username;
+            console.log(this.username)*/
 
         },
         computed: {

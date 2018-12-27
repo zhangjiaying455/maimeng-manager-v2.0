@@ -32,6 +32,7 @@ export function dictionary() {
 
 }
 
+/*
 export function getInfo(token) {
     return request({
         url: '/user/info',
@@ -39,6 +40,7 @@ export function getInfo(token) {
         params: { token }
     })
 }
+*/
 
 export function logout() {
     return request({

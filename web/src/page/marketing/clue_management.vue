@@ -28,11 +28,12 @@
                 </span>
             </div>
             <div class="info-item">
-                <span class="item-left font-black">预约时间</span>
+                <span class="item-left font-black">线索时间</span>
                 <span class="item-right">
                      <el-date-picker
                          v-model="beginTime"
                          type="date"
+                         value-format="yyyy/MM/dd"
                          placeholder="选择日期"
                          @change="getSbeginTime">
                    </el-date-picker>
@@ -146,6 +147,7 @@
     import request from '@/untils/request'
     import moment from 'moment'
     import {mapGetters} from 'vuex'
+    import fileDownload from 'js-file-download'
     export default {
         inject:['reload'],//注入reload方法
         data() {
@@ -181,15 +183,24 @@
                     qualityName:'',
                     qualitySearch:''
                 },
-                qualityList:[]
-
+                qualityList:[],
             }
         },
         created(){
-            this.demand.newDemand=this.$route.query.rowName;//初始化需求名称
+            //console.log(this.$route.query.rowName);
+            this.demand.newDemand=this.$route.query.rowName==undefined?"":this.$route.query.rowName;//初始化需求名称
             this.getDemand();//初始化需求名称字典查询
+
+            //转换日期格式
+            let begin=new Date()
+            /*console.log(begin)*/
+            let result=moment(begin).format('YYYY-MM-DD');
+           /* console.log(result)*/
+            this.beginTime=result; //获取当前日期
+            this.endTime=result; //获取当前日期
             this.getDemandlist()//初始化数据列表
             this.checkClue()//初始化点击线索查询
+           /* console.log(this.beginTime)*/
             this.qualityList.push({
                 name:'未通过',
                 id:-1
@@ -210,11 +221,12 @@
             },
             //这个sTime是在data中声明的，也就是v-model绑定的值
             getSbeginTime(val){
-                this.newRole.beginTime=val;
+                debugger
+                this.beginTime=val;
             },
             //这个sTime是在data中声明的，也就是v-model绑定的值
             getSendTime(val){
-                this.newRole.endTime=val;
+                this.endTime=val;
             },
             //每页条数切换
             handleSizeChange(pageSize) {
@@ -263,7 +275,7 @@
             },
             //获取列表
             getDemandlist(){
-                debugger
+              debugger
               let  params={
                  demandId:this.newDemand,
                  beginDate:this.beginTime,
@@ -332,6 +344,7 @@
                     },
                     params:params
                 }).then((res)=>{
+                    debugger
                     this.tableData=res.data.data.list
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
@@ -363,8 +376,7 @@
             },
             //查询
             search(){
-                //获取列表
-                this.getDemandlist();
+              this.getDemandlist()
             },
             //点击播放 //点击暂停
             playPause(row,index,event){
@@ -439,26 +451,53 @@
                 })
             },
             checkPush(){
-                debugger
-                return request({
-                    methods:'post',
-                    url:'/mai-meng-cloud/thread',
+               /* debugger
+                console.log(this.tableData)
+               if(this.tableData==[]){
+                   debugger
+                   this.$message({
+                       message: '暂无数据可推送',
+                       type: 'warning'
+                   })
+               }else{*/
+                   debugger
+                   return request({
+                       method:'post',
+                       url:'/mai-meng-cloud/thread/excel',
+                       headers: {
+                           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                       },
+                   }).then((res)=>{
+                       debugger
+                       console.log(res.data)
+                       window.location.href=res.data.data
+                   }).catch((error)=>{
+                       debugger
+                       console.log(error)
+                   })
+              // }
+             /*下载下来的excel表格乱码问题  待排除解决*/
+             /*   return request({
+                    method:'post',
+                    url:'/mai-meng-cloud/thread/',
+                    responseType: 'arraybuffer',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
                 }).then((res)=>{
                     debugger
-                    this.$message({
-                        type:'success',
-                        message:'推送成功'
-                    })
+                    console.log("测试")
+                    console.log(res.data)
+                   /!* let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+                    let objectUrl = URL.createObjectURL(blob);
+                    console.log(objectUrl)
+                    window.location.href = objectUrl;*!/
+                    fileDownload(res.data,"text.xls")
                 }).catch((error)=>{
-                    this.$message({
-                        type:'error',
-                        message:'推送失败'
-                    })
+                    debugger
+                    console.log(error)
                 })
-
+*/
             }
 
         },

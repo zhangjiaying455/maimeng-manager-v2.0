@@ -484,17 +484,20 @@
                 debugger
                 console.log(file)
                  console.log(file.type)
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 100;
-                if (!isJPG) {
+                // const isJPG = file.type === 'image/jpeg';
+                const isDOC = file.type === 'application/msword';
+                const isPPT = file.type === 'application/vnd.ms-powerpoint';
+                const isPDF = file.type === 'application/pdf';
+                const isLt100M = file.size / 1024 / 1024 < 100;
+                if (!isDOC && !isPPT && isPDF) {
                     debugger
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 DOC PPT PDF 格式!');
                 }
-                if (!isLt2M) {
+                if (!isLt100M) {
                     debugger
                     this.$message.error('上传头像图片大小不能超过 100MB!');
                 }
-                return isJPG && isLt2M;
+                return isDOC || isPPT || isPDF && isLt100M;
             },
             //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
             handleChange(event,file,fileList) {

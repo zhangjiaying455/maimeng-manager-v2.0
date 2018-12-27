@@ -118,13 +118,22 @@
                                 password:password
                             }
                         }).then((res)=>{
-                            this.$message({
-                                type:'success',
-                                message:'注册成功'
-                            })
-                            this.$router.push({
-                                path:'/'
-                            })
+                            console.log(res.data)
+                            if (res.data.code == 200){
+                                debugger
+                                this.$message({
+                                    type:'success',
+                                    message:'注册成功'
+                                })
+                                this.$router.push({
+                                    path:'/'
+                                })
+                            }else{
+                                this.$message({
+                                    type:'error',
+                                    message:res.data.message
+                                })
+                            }
                         }).catch((error)=>{
                       })
                    }

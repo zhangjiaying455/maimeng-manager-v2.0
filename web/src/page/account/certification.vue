@@ -296,17 +296,19 @@
                 console.log(file)
                 console.log(file.type)
                 const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png'
+                const isBMP = file.type === 'image/bmp'
                 const isLt2M = file.size / 1024 / 1024 < 100;
 
-                if (!isJPG) {
+                if (!isJPG && !isPNG && !isBMP) {
                     debugger
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG PNG BMP格式!');
                 }
                 if (!isLt2M) {
                     debugger
                     this.$message.error('上传头像图片大小不能超过 100MB!');
                 }
-                return isJPG && isLt2M;
+                return isJPG || isPNG || isBMP && isLt2M;
             },
             //文件上传
             handleChange(event,file,fileList) {

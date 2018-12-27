@@ -1,6 +1,7 @@
 import { login , dictionary} from '@/api/login'
-import { getToken, setToken, removeToken } from '@/untils/auth'
+import { getToken,setInfo,setToken, removeToken } from '@/untils/auth'
 import md5 from 'js-md5'
+import {Message} from "element-ui";
 const user = {
   state: {
     token: getToken(),
@@ -18,7 +19,7 @@ const user = {
       state.token = token
     },
     SET_NAME: (state, name) => {
-      state.name = name
+      state.username = name
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -38,11 +39,13 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+        const username = userInfo.username.trim()
         const password=md5(userInfo.password)
       return new Promise((resolve, reject) => {
         login(username,password).then(response => {
-              setToken(response.data.data)
+              debugger
+              sessionStorage.setItem('username',username)
+              commit('SET_NAME',username);
               commit('SET_TOKEN', response.data.data);
           resolve()
         }).catch(error => {
@@ -100,8 +103,8 @@ const user = {
                 let cluesData=JSON.stringify(cluesDatas)
                 sessionStorage.setItem('cluesData',cluesData)
                 //存储需求状态数据
-                let needstateDatas=dest[4].data
                 //转换Json数组为Json字符串
+                let needstateDatas=dest[4].data
                 let needstateData1=JSON.stringify(needstateDatas)
                 //存储需求状态数组  Json字符串
                 sessionStorage.setItem('needstatedData',needstateData1)
@@ -118,7 +121,7 @@ const user = {
             })
         })
       },
-    // 获取用户信息
+  /*  // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
@@ -136,7 +139,7 @@ const user = {
         })
       })
     },
-
+*/
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
