@@ -150,7 +150,6 @@
             },
             //获取业务需求数据
             requirements() {
-                debugger
                 const res=this.$store.dispatch("dictionary")
                 res.then(()=>{
                     //取出存在sessionStorge里面的Json字符串，转换为Json数组
@@ -176,7 +175,6 @@
                     },
                     params:params
                 }).then((res)=>{
-                    debugger
                     console.log(res.data)
                     this.tableData=res.data.data.list;
                     for(var i=0;i<this.tableData.length;i++){
@@ -197,7 +195,6 @@
                         this.pag_show=true;
                     }
                 }).catch((error)=>{
-                    debugger
                     console.log(error)
                 })
             },
@@ -285,12 +282,12 @@
         height: 35px;
         line-height: 15px;
     }
-   .pager-left{
+    .business-list  .pager-left{
         float: left;
         width: 200px;
         margin-top: 15px;
     }
-    .pager-left select{
+    .business-list  .pager-left select{
         color: #c9c7c7;
         font-size: 12px;
         border:1px solid #eaeaea;
@@ -299,11 +296,6 @@
         border-radius: 3px;
         height: 28px;
     }
-    /*.business-list .btn-small{
-        position: absolute;
-        right: 45px;
-
-    }*/
     .business-list .el-table th>.cell{
         text-align: center;
     }

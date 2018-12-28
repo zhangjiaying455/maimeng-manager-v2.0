@@ -67,7 +67,6 @@
                                 ref="upload"
                                 action=""
                                 :show-file-list="true"
-                                :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
                                 :auto-upload="true"
@@ -140,7 +139,6 @@
             init_vocation(){
                 const res=this.$store.dispatch("dictionary")
                 res.then(()=>{
-                    debugger
                     //取出所属行业数据  转为JSON数组
                     let vocations=sessionStorage.getItem('vocation')
                     this.vocation=JSON.parse(vocations)
@@ -206,14 +204,10 @@
 
                 //数据提交
                 if(validate){
-                    console.log(this.n_docs)
-                    console.log("end")
                     this.company.docs=[]
                     this.n_docs.forEach((item,index)=>{
                         this.company.docs.push(item.url)
                     })
-                    console.log(this.company.docs)
-                    console.log("end")
                     return request({
                         method:'put',
                         headers: {
@@ -249,7 +243,6 @@
             },
             //文件删除
             handleRemove(file, fileList) {
-                debugger
                 let _this=this;
                 // let url="";
                 this.fileList=fileList
@@ -265,47 +258,35 @@
                 const f =file.raw
                 const s=file.name
                 client.delete(s,f).then(function (r1) {
-                    debugger
-                    console.log(r1)
                     if (r1.res.status === 204) {
-                        debugger
-                        console.log('删除了')
-                        console.log(file.uid)
                         _this.n_docs.forEach((item,index)=>{
                             if(item.uid == file.uid){
                                 _this.n_docs.splice(index,1)
-                                console.log(_this.n_docs)
                             }
                         })
 
                     }
 
                 }).catch(function (err) {
-                    debugger
-                    console.log(err)
+
                 });
             },
-            handlePreview(file) {
-            },
+           /* handlePreview(file) {
+            },*/
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
             beforeUpload(file){
-                debugger
-                console.log(file)
-                console.log(file.type)
                 const isJPG = file.type === 'image/jpeg';
                 const isPNG = file.type === 'image/png'
                 const isBMP = file.type === 'image/bmp'
                 const isLt2M = file.size / 1024 / 1024 < 100;
 
                 if (!isJPG && !isPNG && !isBMP) {
-                    debugger
                     this.$message.error('上传头像图片只能是 JPG PNG BMP格式!');
                 }
                 if (!isLt2M) {
-                    debugger
                     this.$message.error('上传头像图片大小不能超过 100MB!');
                 }
                 return isJPG || isPNG || isBMP && isLt2M;
@@ -326,24 +307,18 @@
                     const s=file.name
                     client.put(s,f).then(function (r1) {
                         if (r1.res.status === 200) {
-                            debugger
                             let b=[]
-                            console.log('上传了')
                             url=r1.url;
                             _this.company.docs.push(url);
-                            console.log( _this.company.docs)
                             _this.n_docs.push({
                                 name:file.name,
                                 uid:file.uid,
                                 url:url
                             })
-                            console.log(_this.n_docs)
                             _this.fileList=_this.n_docs
-                            console.log(_this.fileList)
                         }
                     }).catch(function (err) {
-                        debugger
-                        console.log(error)
+
                     });
                 }
 

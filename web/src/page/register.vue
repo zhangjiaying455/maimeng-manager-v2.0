@@ -18,12 +18,12 @@
                     <el-form class="form-box" :model="registerForm"  status-icon :rules="rules1" ref="registerForm">
                         <el-form-item class="form-input" prop="phone">
                             <span class="input-left">手机号码</span>
-                            <el-input v-model="registerForm.phone" placeholder="请输入您的手机号"></el-input>
+                            <el-input type="number" v-model="registerForm.phone" placeholder="请输入您的手机号"></el-input>
                         </el-form-item>
                         <el-form-item class="form-input" prop="code">
                             <span class="input-left">验证码</span>
                             <el-input  v-model="registerForm.code"  placeholder="请输入短信验证码"></el-input>
-                            <button type="button" class="btn-small">获取验证吗</button>
+                            <button type="button" class="btn-small codes">获取验证吗</button>
                         </el-form-item>
                         <el-form-item class="form-input" prop="companyName">
                             <span class="input-left">公司名称</span>
@@ -38,7 +38,7 @@
                             <el-input type="password" v-model="registerForm.password" placeholder="请输入6-16位数字或字母组成的密码"></el-input>
                         </el-form-item>
                         <el-form-item class="form-checkbox">
-                            <input type="checkbox" checked="checked"> 我已阅读并同意《麦盟网站服务条款》
+                            <input type="checkbox"> 我已阅读并同意《麦盟网站服务条款》
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" @click="submitReg('registerForm')">注册</button>
@@ -118,9 +118,7 @@
                                 password:password
                             }
                         }).then((res)=>{
-                            console.log(res.data)
                             if (res.data.code == 200){
-                                debugger
                                 this.$message({
                                     type:'success',
                                     message:'注册成功'
@@ -158,6 +156,10 @@
 
     .register .btn-common:hover{
         background-color: #046dac;
+    }
+    .register  .codes{
+        position: absolute;
+        right: 120px;
     }
 
 </style>

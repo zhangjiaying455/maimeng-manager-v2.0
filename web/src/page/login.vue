@@ -10,7 +10,7 @@
         </div>
         <div class="login-content">
             <div class="content-center">
-                <el-form class="login-box" :model="loginForm"  status-icon :rules="rules1" ref="loginForm">
+                <el-form class="login-box" :model="loginForm"  status-icon :rules="rules1" ref="loginForm"   @keyup.enter.native="handleLogin('loginForm')">
                     <h3>登录</h3>
                     <el-form-item class="input" prop="username">
                         <el-input  class="sizeText iconfont icon-xingmingyonghumingnicheng-copy" placeholder="请输入用户名" v-model="loginForm.username"></el-input>
@@ -37,6 +37,7 @@
 
 <script>
 	import {mapActions, mapState} from 'vuex'
+    import { getToken,setToken, removeToken } from '@/untils/auth'
 	export default {
 	    data(){
 			return {
@@ -57,23 +58,33 @@
 		},
 		computed: {
 		},
+        created(){
+        },
 		methods: {
             //点击登录
             handleLogin(loginForm) {
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
-                        const res=this.$store.dispatch("Login", this.loginForm).then(()=>{
-                            debugger
-                            this.$message({
-                                type:'success',
-                                message:'登录成功'
-                            })
-                            this.$router.push({
-                                path:'/manage'
-                            })
+                        this.$store.dispatch("Login", this.loginForm).then((res)=>{
+                            if (res.data.code == 200){
+                                sessionStorage.setItem('username',this.loginForm.username)
+                                setToken(res.data.data)
+                                this.$message({
+                                    type:'success',
+                                    message:'登录成功'
+                                })
+                                this.$router.push("./clue_management")
+                            }else if(res.data.code == 401){
+                                this.$router.push("/")
+                            }else{
+                                this.$message({
+                                    type:'error',
+                                    message:res.data.message
+                                })
+                            }
+
                         }).catch((error)=>{
-                            debugger
-                            console.log(error)
+
                         })
                     } else {
                         return false;

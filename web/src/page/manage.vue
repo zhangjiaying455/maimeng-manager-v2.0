@@ -29,17 +29,17 @@
             <div class="aside">
                 <!--左侧菜单-->
                 <el-menu unique-opened :default-active="defaultActive" theme="dark" router class="menu-list">
-                    <el-menu-item class="menu-font" index="manage">
+                    <!--<el-menu-item class="menu-font" index="manage">
                         <i class="alignment iconfont icon-shouye"></i><span class="text">首页</span>
-                    </el-menu-item>
+                    </el-menu-item>-->
                     <el-submenu  index="2">
                         <template slot="title">
                             <i class="alignment iconfont icon-yewu"></i><span class="text">营销管理</span>
                         </template>
                         <el-menu-item index="business">业务需求</el-menu-item>
                         <el-menu-item index="clue_management">线索管理</el-menu-item>
-                        <el-menu-item index="monitoring">数据监测</el-menu-item>
-                        <el-menu-item index="bordereaux">业务报表</el-menu-item>
+                       <!-- <el-menu-item index="monitoring">数据监测</el-menu-item>
+                        <el-menu-item index="bordereaux">业务报表</el-menu-item>-->
                     </el-submenu>
                    <!-- <el-submenu index="3" >
                         <template slot="title">
@@ -98,7 +98,6 @@
             }
         },
         created(){
-            debugger
             this.username=sessionStorage.getItem('username')
 
         },

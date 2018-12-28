@@ -124,7 +124,7 @@
                     <div class="info-item">
                         <span class="item-left font-black">手机号码</span>
                         <span class="item-right">
-                            <input type="text" value="" class="txt-common" placeholder="请输入手机号码" v-model="account.mobile">
+                            <input type="number" value="" class="txt-common" placeholder="请输入手机号码" v-model="account.mobile">
                         </span>
                     </div>
                     <div class="info-item">
@@ -239,8 +239,6 @@
                         size:1000
                     }
                 }).then((res)=>{
-                    debugger
-                    console.log(res)
                     if(res.data.code=="200"){
                         for(let i=0;i<res.data.data.list.length;i++){
                             let role={
@@ -253,7 +251,6 @@
                         this.$message.error('数据初始化失败，请刷新重试');
                     }
                 }).catch((error=>{
-                    debugger
                     this.$message.error('数据初始化失败，请刷新重试');
                 }));
             },
@@ -276,7 +273,6 @@
                 if(this.search.roleId>0){
                     params.roleId=this.search.roleId;
                 }
-                debugger
                 return request({
                     method:'get',
                     url:'mai-meng-cloud/user',
@@ -285,22 +281,16 @@
                     },
                     params:params
                 }).then((res)=>{
-                    debugger
-                    console.log(res)
                     if(res.data.code=="200"){
-                        debugger
                         this.list.data=res.data.data.list;
                         this.list.totalCount=res.data.data.totalCount;
                         this.list.totalPage=res.data.data.totalPage;
                         this.set_pagers(this.search.page,this.list.totalPage);
                     }else{
-                        debugger
                         this.$message.error('数据异常，请刷新重试');
                     }
                 }).catch((error=>{
-                    debugger
                     this.$message.error('数据异常，请刷新重试');
-                    console.log(error)
                 }));
             },
             prev(){
@@ -574,5 +564,8 @@
         color: #1f2d3d;
         background-color: #eaeaea;
         border:1px solid #c4c4c4;
+    }
+    .subaccount-edit .btn-small{
+        width:140px !important
     }
 </style>

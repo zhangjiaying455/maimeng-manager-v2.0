@@ -179,10 +179,9 @@ body{
 .txt-common{
     width: 215px;
     padding-left: 10px;
-    border: 0;
     outline: none;
 }
-.btn-small{
+.page-content .btn-small{
     width: 100px;
     height: 26px;
     background-color: #fff;
@@ -195,10 +194,8 @@ body{
     line-height: 22px;
     text-align: center;
     cursor: pointer;
-    position: absolute;
-    right: 120px;
 }
-.btn-common{
+.page-content .btn-common{
     width: 330px;
     height: 42px;
     background-color: #007bc4;

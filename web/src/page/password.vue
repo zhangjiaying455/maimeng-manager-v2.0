@@ -23,12 +23,12 @@
                     <el-form class="form-box" id="step-1" v-show="first_step" :model="amendPassForm"  status-icon  ref="amendPassForm">
                         <el-form-item class="form-input" prop="phone">
                             <span class="input-left">手机号码</span>
-                            <el-input v-model="amendPassForm.phone" placeholder="请输入您的手机号码"></el-input>
+                            <el-input type="number" v-model="amendPassForm.phone" placeholder="请输入您的手机号码"></el-input>
                         </el-form-item>
                         <el-form-item class="form-input" prop="code">
                             <span class="input-left">验证码</span>
                             <el-input  v-model="amendPassForm.code"  placeholder="请输入短信验证码"></el-input>
-                            <button type="button" class="btn-small">获取验证码</button>
+                            <button type="button" class="btn-small  codes">获取验证码</button>
                         </el-form-item>
                         <div class="form-btn">
                             <button type="button" class="btn-common" id="btn-check-info" @click="checkFirst">下一步</button>
@@ -87,15 +87,15 @@
                 this.$router.push({
                     path:'/'
                 })
-                this.reload()
+                // this.reload()
             },
             //点击下一步进入修改密码页面
             checkFirst(){
                 if(this.amendPassForm.phone == ''){
                    this.$message.error("请输入手机号")
-                }else if(this.amendPassForm.code == ''){
+                }/*else if(this.amendPassForm.code == ''){
                     this.$message.error("请输入验证码")
-                }else{
+                }*/else{
                     this.first_step=false
                     this.second_step=true
                     let arr=document.getElementsByClassName('tab_item')
@@ -109,7 +109,9 @@
                 }
                 else if(this.amendPassForm.newPassword == ''){
                     this.$message.error("请输入确认密码")
-                }else{
+                }else if (this.amendPassForm.password !== this.amendPassForm.newPassword){
+                    this.$message.error("两次密码不一致，请重新输入")
+                } else{
                     this.$refs.amendPassForm.validate(validate=>{
                         if (validate) {
                             let pass=md5(this.amendPassForm.password)
@@ -130,9 +132,20 @@
                                     password:password
                                 }
                             }).then((res)=>{
-                                this.second_step=false,
-                                this.third_step=true,
-                                arr[2].classList.add("over")
+                                if (res.data.code == 200){
+                                    this.$message({
+                                        type:'success',
+                                        message:res.data.data
+                                    })
+                                    this.second_step=false,
+                                    this.third_step=true,
+                                    arr[2].classList.add("over")
+                                }else{
+                                    this.$message({
+                                    type:'error',
+                                    message:res.data.data
+                                })
+                                }
                             }).catch((error)=>{
                             })
                         }
@@ -164,5 +177,9 @@
     .password .form-input{position: relative}
     .password .btn-common:hover{
         background-color: #046dac;
+    }
+    .password .codes{
+        position: absolute;
+        right: 120px;
     }
 </style>

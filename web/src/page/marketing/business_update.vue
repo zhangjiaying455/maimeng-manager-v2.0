@@ -83,7 +83,7 @@
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>年龄范围</span>
                             <span class="item-right">
-                                        <input type="text" class="txt-common" value="" style="width: 159px !important;" v-model="newRole.beginAge"> - <input type="text" class="txt-common" value="" style="width:159px !important;" v-model="newRole.endAge">
+                                        <input type="number" class="txt-common" value="" style="width: 159px !important;" v-model="newRole.beginAge"> - <input type="number" class="txt-common" value="" style="width:159px !important;" v-model="newRole.endAge">
                                     </span>
                         </div>
                         <div class="info-item">
@@ -156,7 +156,7 @@
                         <div class="info-item">
                             <span class="item-left font-black"><span>*</span>联系电话</span>
                             <span class="item-right">
-                                        <input type="text" value="" class="txt-common" v-model="newRole.mobile">
+                                        <input type="number" value="" class="txt-common" v-model="newRole.mobile">
                                     </span>
                         </div>
                         <div class="info-item">
@@ -249,7 +249,7 @@
                         <div class="info-item">
                             <span class="item-left">年龄范围</span>
                             <span class="item-right">
-                                        {{this.newRole.beginAge}}-{{this.newRole.endAge}}岁青少儿
+                                        {{this.newRole.beginAge}}-{{this.newRole.endAge}}岁
                                     </span>
                         </div>
                         <div class="info-item">
@@ -447,9 +447,6 @@
             },*/
             //文件删除
             handleRemove(file, fileList) {
-                debugger
-                console.log(fileList);
-                console.log("eui-del-file-list")
                 let _this=this;
                 // let url="";
                 //this.fileList=fileList
@@ -463,23 +460,16 @@
                 const f =file.raw
                 const s=file.name
                 client.delete(s,f).then(function (r1) {
-                    debugger
-                    console.log(r1)
                     if (r1.res.status === 204) {
-                        console.log('删除了')
                         _this.n_docs.forEach((item,index)=>{
-                            debugger
-                            console.log(item.uid)
                             if(item.uid == file.uid){
                                 _this.n_docs.splice(index,1)
-                                console.log(_this.n_docs)
                             }
                         })
 
                     }
                 }).catch(function (err) {
-                    debugger
-                    console.log(err)
+
                 });
             },
             //点击文件列表中已上传的文件时的钩子
@@ -488,27 +478,24 @@
                 this.dialogVisible = true;
             },*/
             beforeUpload(file){
-                debugger
-                console.log(file)
-                console.log(file.type)
-                const isJPG = file.type === 'image/jpeg';
+                const isDOC = file.type === 'application/msword';
+                const isDOCX = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                const isPPT = file.type === 'application/vnd.ms-powerpoint';
+                const isPDF = file.type === 'application/pdf';
                 const isLt2M = file.size / 1024 / 1024 < 100;
 
-                if (!isJPG) {
-                    debugger
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                if (!isDOC && !isDOCX && !isPPT && !isPDF) {
+                    this.$message.error('上传文件只能是 DOC PPT PDF 格式');
                 }
                 if (!isLt2M) {
-                    debugger
                     this.$message.error('上传头像图片大小不能超过 100MB!');
                 }
-                return isJPG && isLt2M;
+                return isDOC || isPPT || isPDF || isDOCX && isLt2M;
             },
             //文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
             handleChange(event,file,fileList){
                 let _this = this;
                     let url = "";
-                    debugger
                     let client = new OSS({
                         accessKeyId: 'LTAIUEAyF5F1rtjD',
                         accessKeySecret: '6E4HR2AI8Bwd9DlfcjcwjksjFfpkzD',
@@ -519,10 +506,7 @@
                     const s = file.name
                     // const storeAs = 'abcdf'
                     client.put(s, f).then(function (r1) {
-                        debugger
                         if (r1.res.status === 200) {
-                            debugger
-                            console.log('上传了')
                             url = r1.url;
                             _this.newRole.docs.push(url);
                             _this.n_docs.push({
@@ -530,13 +514,10 @@
                                 uid: file.uid,
                                 url: url
                             })
-                            console.log(_this.n_docs)
                             _this.fileList=_this.n_docs
-                            console.log(_this.fileList)
                         }
                     }).catch(function (err) {
-                        debugger
-                        console.log(err)
+
                     });
             },
             //点击下一步进入品牌信息
@@ -566,7 +547,6 @@
             },
             //编辑
             editor(){
-                 debugger
                     let rowId=this.$route.query.rowId
                     return request({
                         methods:'get',
@@ -575,8 +555,6 @@
                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                         },
                 }).then((res)=>{
-                     debugger
-                      console.log(res.data.data)
                      this.brandEntityId=res.data.data.brandEntity.id
                      this.demandId=res.data.data.demand.id
                      this.threadTemplateId=res.data.data.threadTemplate.id
@@ -585,7 +563,6 @@
                      //补充说明
                     this.newRole.supplementary=demand.remark
                     let docsArr=demand.docs;
-                    //console.log(docsArr)
                      let newDocs=[]
                      for(let i=0;i<docsArr.length;i++){
                          this.newRole.docs.push(docsArr[i])
@@ -608,9 +585,7 @@
                         let operationData=this.operationData
                         operationData.forEach((item)=>{
                             if(demand.operationMode==item.dKey){
-                                debugger
                                 this.operationValue=item.dValue
-                                console.log(this.operationValue)
                             }
                         })
                         //判断业务分类
@@ -715,7 +690,6 @@
                 operationData.forEach((item)=>{
                     if(this.operationMode==item.dKey){
                         this.operationValue=item.dValue
-                        console.log(this.operationValue)
                     }
                 })
             },
@@ -726,7 +700,6 @@
                 businessData.forEach((item)=>{
                     if(this.businessClassification==item.dKey){
                         this.businessValue=item.dValue
-                        console.log(this.businessValue)
                     }
                 })
             },
@@ -737,7 +710,6 @@
                 priceleveData.forEach((item)=>{
                     if(this.priceLevel==item.dKey){
                         this.priceLevelValue=item.dValue
-                        console.log(this.priceLevelValue)
                     }
                 })
             },
@@ -748,7 +720,6 @@
                 regionData.forEach((item)=>{
                     if(this.area==item.dKey){
                         this. areaValue=item.dValue
-                        console.log(this.areaValue)
                     }
                 })
             },
@@ -758,7 +729,6 @@
                 this.n_docs.forEach((item,index)=>{
                     this.newRole.docs.push(item.url)
                 })
-                debugger
                 this.$refs.newRole.validate(valid => {
                     if (valid) {
                         let ageRange=this.newRole.beginAge+","+this.newRole.endAge
@@ -798,8 +768,6 @@
                                 },
                             }
                         }).then((res)=>{
-                            debugger
-                            console.log(res)
                             this.$message({
                                 type: 'success',
                                 message: '更新成功!'

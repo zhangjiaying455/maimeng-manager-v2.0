@@ -24,12 +24,10 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
     response => {
-        debugger
         const res = response.data
         return response
     },
     error => {
-        debugger
        /* Message({
             message: error.message,
             type: 'error',

@@ -43,11 +43,8 @@ const user = {
         const password=md5(userInfo.password)
       return new Promise((resolve, reject) => {
         login(username,password).then(response => {
-              debugger
-              sessionStorage.setItem('username',username)
-              setToken(response.data.data)
-              commit('SET_TOKEN', response.data.data);
-          resolve()
+          commit('SET_TOKEN', response.data.data);
+          resolve(response)
         }).catch(error => {
           reject(error)
         })
@@ -57,7 +54,6 @@ const user = {
     dictionary({ commit }){
         return new Promise((resolve , reject)=>{
             dictionary().then(response=>{
-                debugger
                 const data=response.data.data
                 console.log(data)
                 //根据相同的groupId组成新的数组

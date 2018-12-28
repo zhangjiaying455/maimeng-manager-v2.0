@@ -89,7 +89,7 @@
                     label="孩子性别">
                 </el-table-column>
                 <el-table-column
-                    prop="state"
+                    prop="state_name"
                     label="质检结果">
                 </el-table-column>
                 <el-table-column
@@ -107,9 +107,9 @@
                 <div class="search-item">
                     <span class="item-left">质检状态:</span>
                     <span class="item-right">
-                     <el-select v-model="demand.qualityName" @change="changeQuality($event)">
-                         <template v-for="(item,index) in qualityList">
-                            <el-option :label="item.name"  :value="item.id" :key="index">{{item.name}}</el-option>
+                     <el-select v-model="state">
+                         <template v-for="item in qualityList">
+                            <el-option :label="item.name"  :value="item.id" :key="item.id">{{item.name}}</el-option>
                         </template>
                      </el-select>
                    </span>
@@ -152,6 +152,7 @@
         data() {
             return {
                 id:'',//质检的rowd
+                state:'',//质检状态
                 dialogVisible:false,
                 musicShow:false,//隐藏audio播放器
                 beginTime:'',//选择日期  开始日期
@@ -183,6 +184,7 @@
                     qualitySearch:''
                 },
                 qualityList:[],
+                qualityLists:{"0":"已通过","-1":"未通过"}
             }
         },
         created(){
@@ -207,7 +209,6 @@
                 name:'已通过',
                 id:0
             })
-            console.log(this.qualityList)
         },
         methods: {
             //时间格式化
@@ -274,9 +275,10 @@
             },
             //获取列表
             getDemandlist(){
-              debugger
+              let rowId=this.$route.query.rowId;
+              let newDemand=this.newDemand==undefined?"":rowId
               let  params={
-                 demandId:this.newDemand,
+                 demandId:newDemand,
                  beginDate:this.beginTime,
                  endDate:this.endTime,
                  page:this.currentPage-1,
@@ -291,8 +293,6 @@
                     },
                     params:params
                 }).then((res)=>{
-                    debugger
-                    console.log(res.data.data.list)
                     this.tableData=res.data.data.list
                     for (var i=0;i<this.tableData.length;i++){
                         if (this.tableData[i].parentType==1){
@@ -306,9 +306,9 @@
                             this.tableData[i].sex='女'
                         }
                         if (this.tableData[i].state==0){
-                            this.tableData[i].state='已通过'
+                            this.tableData[i].state_name='已通过'
                         }else{
-                            this.tableData[i].state='未通过'
+                            this.tableData[i].state_name='未通过'
                         }
                     }
                     let data=res.data.data.list
@@ -320,58 +320,14 @@
                         this.pag_show=true;
                     }
                 }).catch((error)=>{
-                    debugger
-                    console.log(error)
+
                 })
             },
             //点击线索查询
             checkClue(){
-                let rowId=this.$route.query.rowId;
+                // let rowId=this.$route.query.rowId;
                 this.rowName=this.$route.query.rowName
-                let params={
-                    demandId:rowId,
-                    beginDate:this.beginTime,
-                    endDate:this.endTime,
-                    page:this.currentPage-1,
-                    size:this.pageSize
-                }
-                return request({
-                    methods:'get',
-                    url:'/mai-meng-cloud/thread',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                    },
-                    params:params
-                }).then((res)=>{
-                    debugger
-                    this.tableData=res.data.data.list
-                    for (var i=0;i<this.tableData.length;i++){
-                        if (this.tableData[i].parentType==1){
-                            this.tableData[i].parentType='父亲'
-                        } else{
-                            this.tableData[i].parentType='母亲'
-                        }
-                        if(this.tableData[i].sex==1){
-                            this.tableData[i].sex='男'
-                        }else{
-                            this.tableData[i].sex='女'
-                        }
-                        if (this.tableData[i].state==0){
-                            this.tableData[i].state='已通过'
-                        }else{
-                            this.tableData[i].state='未通过'
-                        }
-                    }
-                    let data=res.data.data.list
-                    let timeUpate=new Date()
-                    this.total=res.data.data.totalCount
-                    if(this.total == 0){
-                        this.pag_show=false;
-                    }else{
-                        this.pag_show=true;
-                    }
-                }).catch((error)=>{
-                })
+                this.getDemandlist()
             },
             //查询
             search(){
@@ -386,10 +342,7 @@
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
                 }).then((res)=>{
-                    debugger
-                    console.log(res.data)
                     let url=res.data.data
-                    console.log(url)
                     let audio=document.getElementById('music')
                     let iconShow=event.target.getAttribute('class')
                     let iconName=event.target.getAttribute('name')
@@ -407,8 +360,6 @@
                         audio.pause()
                     }
                 }).catch((error)=>{
-                    debugger
-                    console.log(error)
                 })
 
             },
@@ -420,15 +371,15 @@
             //修改某个线索的质检结果
             quality(row){
                 this.id=row.id
+                this.state=row.state;
                 this.dialogVisible=true
             },
             qualitSubmit(row){
                 let params={
                     id:this.id,
-                    state:this.qualityName,
+                    state:this.state,
                 }
-                console.log(this.id)
-                console.log(this.qualityName)
+
                 return request({
                     method:'put',
                     url:'/mai-meng-cloud/thread',
@@ -437,15 +388,12 @@
                     },
                     params:params
                 }).then((res)=>{
-                    debugger
-                    console.log(res)
                     this.dialogVisible=false
                     this.getDemandlist();
                     /*   this.reload()*/
 
                 }).catch((error)=>{
-                    debugger
-                    console.log(error)
+
 
                 })
             },
@@ -459,7 +407,6 @@
                        type: 'warning'
                    })
                }else{*/
-                   debugger
                    return request({
                        method:'post',
                        url:'/mai-meng-cloud/thread/excel',
@@ -467,12 +414,9 @@
                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                        },
                    }).then((res)=>{
-                       debugger
-                       console.log(res.data)
                        window.location.href=res.data.data
                    }).catch((error)=>{
-                       debugger
-                       console.log(error)
+
                    })
               // }
              /*下载下来的excel表格乱码问题  待排除解决*/
@@ -522,18 +466,14 @@
     .clue-list .el-table th>.cell{
         text-align: center;
     }
-    /*.btn-small{
-        position: absolute;
-        right: 30px;
-    }*/
     .color{color: #1d90e6;cursor: pointer;margin-left: 10px}
-    .pager-left{
+    .clue-list .pager-left{
         float: left;
         width: 200px;
         margin-top: 15px;
 
     }
-    .pager-left select{
+    .clue-list .pager-left select{
         color: #c9c7c7;
         font-size: 12px;
         border:1px solid #eaeaea;

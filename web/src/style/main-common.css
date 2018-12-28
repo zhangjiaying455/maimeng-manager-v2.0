@@ -308,7 +308,6 @@ textarea::-webkit-input-placeholder{
     text-align: center;
 
     outline: none;
-    border: 0;
     cursor: pointer;
 }
 .txt-common{
@@ -318,7 +317,6 @@ textarea::-webkit-input-placeholder{
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-
     color: #b9b9b9;
     font-size: 14px;
     font-weight: 400;
@@ -463,6 +461,7 @@ select.txt-common{
     float: right;
     width: 600px;
     text-align: right;
+    margin-top: 5px;
 }
 .main-table .pager-box{
     display: inline-block;

@@ -47,7 +47,7 @@
             <div class="modal-body">
                 <div class="modal-item">
                     <span class="item-left"><span>*</span>手机号：</span>
-                    <input type="text" value="" class="txt-common" style="width: 277px;" placeholder="请输入新手机号码" v-model="dialog_mobile_info.mobile">
+                    <input type="number" value="" class="txt-common" style="width: 277px;" placeholder="请输入新手机号码" v-model="dialog_mobile_info.mobile">
                 </div>
                 <div class="modal-item">
                     <span class="item-left"><span>*</span>验证码：</span>
